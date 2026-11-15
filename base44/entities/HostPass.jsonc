@@ -1,0 +1,21 @@
+{
+  "name": "HostPass",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "transaction_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_id",
+    "expires_at",
+    "transaction_id"
+  ]
+}

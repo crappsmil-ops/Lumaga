@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/jpeg" href="https://media.base44.com/images/public/6a09a62c9928acb19f05a61b/290e0472b_LogomitWeinglasSektglas.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <script>
+      (function() {
+        var mq = window.matchMedia('(prefers-color-scheme: dark)');
+        function applyTheme(e) {
+          document.documentElement.classList.toggle('dark', e.matches);
+        }
+        applyTheme(mq);
+        mq.addEventListener('change', applyTheme);
+      })();
+    </script>
+    <link rel="manifest" href="/manifest.json" />
+    <title>Lumaga</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

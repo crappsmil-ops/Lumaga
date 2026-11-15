@@ -1,0 +1,107 @@
+{
+  "name": "GameRoom",
+  "type": "object",
+  "properties": {
+    "room_code": {
+      "type": "string"
+    },
+    "starting_player_count": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "waiting",
+        "playing",
+        "finished"
+      ],
+      "default": "waiting"
+    },
+    "current_question_index": {
+      "type": "number",
+      "default": 0
+    },
+    "question_seed": {
+      "type": "number"
+    },
+    "alcohol_free": {
+      "type": "boolean",
+      "default": false
+    },
+    "hot_mode": {
+      "type": "boolean",
+      "default": false
+    },
+    "hardcore_mode": {
+      "type": "boolean",
+      "default": false
+    },
+    "host_name": {
+      "type": "string"
+    },
+    "host_user_id": {
+      "type": "string"
+    },
+    "total_questions": {
+      "type": "number"
+    },
+    "custom_questions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "excluded_question_keys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "last_activity": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "party_pass_expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "player_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "active_player_id": {
+      "type": "string"
+    },
+    "turn_player_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "room_code",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.player_ids": "{{user.id}}"
+        }
+      ]
+    },
+    "create": {},
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

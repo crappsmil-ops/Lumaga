@@ -1,0 +1,56 @@
+{
+  "name": "GamePlayer",
+  "type": "object",
+  "properties": {
+    "room_id": {
+      "type": "string"
+    },
+    "room_code": {
+      "type": "string"
+    },
+    "player_name": {
+      "type": "string"
+    },
+    "player_avatar": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "score": {
+      "type": "number",
+      "default": 0
+    },
+    "sips": {
+      "type": "number",
+      "default": 0
+    },
+    "is_host": {
+      "type": "boolean",
+      "default": false
+    },
+    "room_player_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "room_id",
+    "room_code",
+    "player_name"
+  ],
+  "rls": {
+    "read": {
+      "data.room_player_ids": "{{user.id}}"
+    },
+    "create": {},
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

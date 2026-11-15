@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Space Grotesk', sans-serif;
+
+    --background: 250 25% 6%;
+    --foreground: 0 0% 95%;
+    --card: 250 20% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 250 20% 10%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 280 80% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 250 20% 16%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 250 15% 14%;
+    --muted-foreground: 250 10% 55%;
+    --accent: 330 85% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 250 15% 18%;
+    --input: 250 15% 18%;
+    --ring: 280 80% 60%;
+    --chart-1: 280 80% 60%;
+    --chart-2: 330 85% 60%;
+    --chart-3: 200 80% 55%;
+    --chart-4: 45 90% 55%;
+    --chart-5: 160 70% 45%;
+    --radius: 0.75rem;
+    --sidebar-background: 250 25% 6%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 280 80% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 250 20% 16%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 250 15% 18%;
+    --sidebar-ring: 280 80% 60%;
+  }
+
+  .dark {
+    --background: 250 25% 6%;
+    --foreground: 0 0% 95%;
+    --card: 250 20% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 250 20% 10%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 280 80% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 250 20% 16%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 250 15% 14%;
+    --muted-foreground: 250 10% 55%;
+    --accent: 330 85% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 250 15% 18%;
+    --input: 250 15% 18%;
+    --ring: 280 80% 60%;
+    --chart-1: 280 80% 60%;
+    --chart-2: 330 85% 60%;
+    --chart-3: 200 80% 55%;
+    --chart-4: 45 90% 55%;
+    --chart-5: 160 70% 45%;
+    --sidebar-background: 250 25% 6%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 280 80% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 250 20% 16%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 250 15% 18%;
+    --sidebar-ring: 280 80% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overscroll-behavior: none;
+  }
+  button, [role="button"] {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+@layer utilities {
+  .pt-safe { padding-top: env(safe-area-inset-top); }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  .pb-tabbar { padding-bottom: calc(4rem + env(safe-area-inset-bottom)); }
+  .pl-safe { padding-left: env(safe-area-inset-left); }
+  .pr-safe { padding-right: env(safe-area-inset-right); }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+/* iPhone/iOS: verhindert automatisches Hineinzoomen
+   beim Antippen von Eingabefeldern */
+@media (max-width: 768px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
