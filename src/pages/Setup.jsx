@@ -1671,7 +1671,7 @@ const checking =
 
 
         {isWebStore &&
-          new URLSearchParams(window.location.search).get("partyTest") === "1" && (
+          true && (
             <RevenueCatTest />
           )}
       <BottomTabBar />
