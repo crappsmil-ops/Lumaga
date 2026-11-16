@@ -58,3 +58,12 @@ export async function checkLumagaPartyPass() {
     expiresAt: data.expiresAt ?? null,
   };
 }
+
+export async function getLumagaPartyPassCheckoutUrl() {
+  const appUserId = await getLumagaPartySession();
+
+  const sandboxCheckout =
+    "https://pay.rev.cat/sandbox/pvxxufauyosngefk/";
+
+  return sandboxCheckout + encodeURIComponent(appUserId);
+}
