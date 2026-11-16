@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import BackButton from "@/components/BackButton";
 
 import BottomTabBar from "@/components/BottomTabBar";
+import RevenueCatTest from "@/components/RevenueCatTest";
 
 
 
@@ -1669,6 +1670,10 @@ const checking =
       )}
 
 
+        {isWebStore &&
+          new URLSearchParams(window.location.search).get("partyTest") === "1" && (
+            <RevenueCatTest />
+          )}
       <BottomTabBar />
 
     </div>
