@@ -17,6 +17,9 @@ import React, {
 
 import { Purchases } from "@/lib/revenueCatAdapter";
 import { PRODUCTS } from "@/lib/products";
+import { Capacitor } from "@capacitor/core";
+
+const IS_WEB = Capacitor.getPlatform() === "web";
 
 
 
@@ -162,6 +165,7 @@ const PremiumContext = createContext({
 
 
   refreshPremiumStatus: async () => {},
+  webPartyPassVerificationError: false,
 
 });
 
@@ -292,6 +296,10 @@ export function PremiumProvider({
   );
 
   const [premiumStatusLoading, setPremiumStatusLoading] = useState(true);
+  // Web: erst einen signierten und serverseitig geprüften Kauf akzeptieren.
+  const [webPartyPassChecking, setWebPartyPassChecking] = useState(IS_WEB);
+  const [webPartyPassVerificationError, setWebPartyPassVerificationError] =
+    useState(false);
 
 
 
@@ -352,13 +360,7 @@ export function PremiumProvider({
     setPartyPassExpiry,
 
   ] = useState(() =>
-
-    readStoredNumber(
-
-      "party_pass_expiry"
-
-    )
-
+    IS_WEB ? null : readStoredNumber("party_pass_expiry")
   );
 
 
@@ -528,6 +530,7 @@ export function PremiumProvider({
           );
 
         if (
+          !IS_WEB &&
           revenueCatPartyPassExpiry &&
           revenueCatPartyPassExpiry >
             Date.now()
@@ -986,6 +989,8 @@ const custom =
   const activatePartyPass =
 
     useCallback((expiry) => {
+      // Auf der Web-Version darf nur die Serverprüfung den Pass aktivieren.
+      if (IS_WEB) return false;
 
       if (!expiry) {
 
@@ -1139,6 +1144,92 @@ const custom =
 
 
 
+  // Der RevenueCat-Web-Kauf hat eine andere Kundenkennung als die
+  // vorhandenen Einzelkäufe. Deshalb nur den signierten Vercel-Endpunkt
+  // für die 24h-Freischaltung auf der Web-Version verwenden.
+  useEffect(() => {
+    if (!IS_WEB) return undefined;
+
+    let cancelled = false;
+    let checkInFlight = null;
+
+    async function verifyWebPass() {
+      // Mehrere Focus-/Pageshow-Events sollen keine parallelen Checks starten.
+      if (checkInFlight) return checkInFlight;
+
+      setWebPartyPassChecking(true);
+      const task = (async () => {
+        try {
+          const { checkLumagaPartyPass } = await import("@/lib/revenueCatWeb");
+          const result = await checkLumagaPartyPass();
+          if (cancelled) return;
+
+          const expiry = result.active && result.expiresAt
+            ? Date.parse(result.expiresAt)
+            : NaN;
+          const verifiedExpiry = Number.isFinite(expiry) && expiry > Date.now()
+            ? expiry
+            : null;
+
+          setPartyPassExpiry(verifiedExpiry);
+          setNow(Date.now());
+          setWebPartyPassVerificationError(false);
+
+          // Alte Web-Caches dürfen keinen Kauf nachweisen.
+          try {
+            localStorage.removeItem("party_pass_expiry");
+          } catch {
+            // Browser kann lokale Speicherung verweigern.
+          }
+        } catch (error) {
+          if (cancelled) return;
+          console.error("Web-Party-Pass-Prüfung fehlgeschlagen:", error);
+          // Bei Prüfungsfehler nicht aus einem alten Cache freischalten.
+          setPartyPassExpiry(null);
+          setWebPartyPassVerificationError(true);
+          setNow(Date.now());
+        } finally {
+          if (!cancelled) setWebPartyPassChecking(false);
+        }
+      })();
+
+      checkInFlight = task;
+      try {
+        await task;
+      } finally {
+        if (checkInFlight === task) checkInFlight = null;
+      }
+    }
+
+    function checkWhenVisible() {
+      if (document.visibilityState !== "visible") return;
+      setNow(Date.now());
+      void verifyWebPass();
+    }
+
+    void verifyWebPass();
+    // Nach Rückkehr vom externen Checkout oder einem anderen Tab.
+    window.addEventListener("pageshow", checkWhenVisible);
+    window.addEventListener("focus", checkWhenVisible);
+    document.addEventListener("visibilitychange", checkWhenVisible);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("pageshow", checkWhenVisible);
+      window.removeEventListener("focus", checkWhenVisible);
+      document.removeEventListener("visibilitychange", checkWhenVisible);
+    };
+  }, []);
+
+  // Minutentimer für die Anzeige; zusätzlicher Timeout für den exakten
+  // Ablaufzeitpunkt (ohne bis zum nächsten Minutentick zu warten).
+  useEffect(() => {
+    if (!partyPassExpiry) return undefined;
+    const timeUntilExpiry = Math.max(0, partyPassExpiry - Date.now());
+    const timeout = setTimeout(() => setNow(Date.now()), timeUntilExpiry);
+    return () => clearTimeout(timeout);
+  }, [partyPassExpiry]);
+
   const hasPartyPass =
 
     partyPassExpiry !== null &&
@@ -1163,7 +1254,8 @@ const TEST_PREMIUM = import.meta.env.DEV && true;
 
         partyEntitlements,
 
-        premiumStatusLoading,
+        premiumStatusLoading: premiumStatusLoading || webPartyPassChecking,
+        webPartyPassVerificationError,
 
         isHotPremium,
 

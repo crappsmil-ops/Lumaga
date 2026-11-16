@@ -33,7 +33,6 @@ import { Button } from "@/components/ui/button";
 import BackButton from "@/components/BackButton";
 
 import BottomTabBar from "@/components/BottomTabBar";
-import RevenueCatTest from "@/components/RevenueCatTest";
 
 
 
@@ -211,6 +210,7 @@ export default function Setup() {
     partyEntitlements,
 
     premiumStatusLoading,
+    webPartyPassVerificationError,
 
     partyPassRemainingMs,
 
@@ -842,6 +842,39 @@ if (
       : null;
   };
 
+  // Nur Sandbox: Die eigentliche Party-Pass-Box öffnet den Kauf-Link.
+  // Die vorhandenen Einzelkäufe und der native Kaufdialog bleiben unverändert.
+  const handleWebPartyPassCheckout = async () => {
+    if (
+      !isWebStore ||
+      purchasing ||
+      premiumStatusLoading ||
+      webPartyPassVerificationError ||
+      hasPartyPass
+    ) {
+      return;
+    }
+
+    setPurchasing(true);
+    setPartyPassPurchaseMessage("");
+    try {
+      const { getLumagaPartyPassCheckoutUrl } = await import(
+        "@/lib/revenueCatWeb"
+      );
+      const checkoutUrl = await getLumagaPartyPassCheckoutUrl();
+      window.location.assign(checkoutUrl);
+    } catch (error) {
+      console.error("Party-Pass-Sandbox-Checkout:", error);
+      setPartyPassPurchaseMessage(
+        error?.message ||
+          (lang === "en"
+            ? "The test checkout could not be opened."
+            : "Der Testkauf konnte nicht geöffnet werden.")
+      );
+      setPurchasing(false);
+    }
+  };
+
   const handlePartyPassPurchase = async () => {
     if (
       purchasing ||
@@ -1140,25 +1173,58 @@ if (
                     : "Party Pass aktiv"}
                 </p>
               ) : (
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full mt-3"
-                  onClick={() => {
-                    setPartyPassPurchaseMessage("");
-                    setPartyPassPriceError("");
-                    setShowPartyPassPaywall(true);
-                  }}
-                  disabled={
-                    !isNativeStore ||
-                    premiumStatusLoading
-                  }
-                >
-                 
-{lang === "en"
-  ? "24h Party Pass – coming soon"
-  : "24h Party Pass – in Vorbereitung"}
-                </Button>
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full mt-3"
+                    disabled={
+                      purchasing ||
+                      premiumStatusLoading ||
+                      (isWebStore && webPartyPassVerificationError) ||
+                      (!isWebStore && !isNativeStore)
+                    }
+                    onClick={() => {
+                      setPartyPassPurchaseMessage("");
+                      setPartyPassPriceError("");
+                      if (isWebStore) {
+                        void handleWebPartyPassCheckout();
+                      } else {
+                        setShowPartyPassPaywall(true);
+                      }
+                    }}
+                  >
+                    {purchasing && isWebStore
+                      ? (lang === "en" ? "Opening checkout…" : "Kauf wird geöffnet…")
+                      : isWebStore
+                        ? (lang === "en"
+                            ? "Test 24h Party Pass · €3.99"
+                            : "24h Party Pass testen · 3,99 €")
+                        : (lang === "en"
+                            ? "24h Party Pass – coming soon"
+                            : "24h Party Pass – in Vorbereitung")}
+                  </Button>
+                  {isWebStore && (
+                    <p className="font-body text-xs text-muted-foreground mt-2">
+                      {lang === "en"
+                        ? "Sandbox only · No real charge · No subscription"
+                        : "Nur Sandbox-Test · Keine echte Abbuchung · Kein Abo"}
+                    </p>
+                  )}
+                </>
+              )}
+
+              {isWebStore && webPartyPassVerificationError && (
+                <p role="status" className="font-body text-xs text-destructive mt-2">
+                  {lang === "en"
+                    ? "Purchase status unavailable. Please reopen Lumaga to retry."
+                    : "Kaufstatus derzeit nicht prüfbar. Öffne Lumaga erneut, um es noch einmal zu versuchen."}
+                </p>
+              )}
+              {isWebStore && partyPassPurchaseMessage && (
+                <p role="alert" className="font-body text-xs text-destructive mt-2">
+                  {partyPassPurchaseMessage}
+                </p>
               )}
             </div>
           </div>
@@ -1670,10 +1736,6 @@ const checking =
       )}
 
 
-        {isWebStore &&
-          true && (
-            <RevenueCatTest />
-          )}
       <BottomTabBar />
 
     </div>
