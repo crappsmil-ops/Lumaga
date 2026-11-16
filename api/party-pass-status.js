@@ -1,4 +1,4 @@
-
+import { createHmac, timingSafeEqual } from "node:crypto";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const MAX_PAGES = 20;
 
@@ -10,15 +10,47 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const customerId = req.body?.customerId;
+ const secret = process.env.LUMAGA_SESSION_SECRET;
 
-  if (
-    typeof customerId !== "string" ||
-    !customerId.trim() ||
-    customerId.length > 1500
-  ) {
-    return res.status(400).json({ error: "Invalid customer ID" });
-  }
+if (!secret) {
+  return res.status(500).json({
+    error: "Session configuration missing",
+  });
+}
+
+const cookie = (req.headers.cookie || "")
+  .split(";")
+  .map((part) => part.trim())
+  .find((part) => part.startsWith("lumaga_party_session="));
+
+const value = cookie?.slice("lumaga_party_session=".length);
+const separator = value?.lastIndexOf(".") ?? -1;
+
+if (separator < 0) {
+  return res.status(401).json({ error: "Session required" });
+}
+
+const customerId = value.slice(0, separator);
+const signature = value.slice(separator + 1);
+
+const expected = createHmac("sha256", secret)
+  .update(customerId)
+  .digest("base64url");
+
+const validFormat =
+  /^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(customerId) &&
+  /^[A-Za-z0-9_-]{43}$/.test(signature);
+
+const expectedBytes = Buffer.from(expected);
+const receivedBytes = Buffer.from(signature);
+
+if (
+  !validFormat ||
+  expectedBytes.length !== receivedBytes.length ||
+  !timingSafeEqual(expectedBytes, receivedBytes)
+) {
+  return res.status(401).json({ error: "Invalid session" });
+}
 
   const apiKey = process.env.REVENUECAT_SECRET_API_KEY;
   const projectId = process.env.REVENUECAT_PROJECT_ID;
