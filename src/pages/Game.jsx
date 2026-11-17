@@ -62,6 +62,39 @@ import {
   playSFX,
 } from "@/lib/audio";
 const RISK_SUCCESS_POINTS = 10;
+// Genau 12 feste kostenlose Fun-Fragen, unabhängig vom Party-Pass.
+// Die Reihenfolge und Auswahl ändern sich zwischen Spielen nicht.
+const FREE_FUN_QUESTIONS = {
+  de: [
+    "Was ist dein lustigstes Party-Erlebnis?",
+    "Welcher Song bringt dich sofort zum Tanzen?",
+    "Was war dein peinlichster Versprecher?",
+    "Wenn du eine Superkraft hättest, welche wäre das?",
+    "Was ist deine ungewöhnlichste Essenskombination?",
+    "Welcher Film bringt dich immer zum Lachen?",
+    "Was war dein spontanster Ausflug?",
+    "Welche drei Dinge würdest du auf eine einsame Insel mitnehmen?",
+    "Was ist dein heimliches Talent?",
+    "Welche berühmte Person würdest du gern treffen?",
+    "Was ist der lustigste Spitzname, den du je hattest?",
+    "Wenn du morgen irgendwo aufwachen könntest, wo wäre das?",
+  ],
+  en: [
+    "What is your funniest party memory?",
+    "Which song always makes you dance?",
+    "What was your most embarrassing slip of the tongue?",
+    "If you could have a superpower, what would it be?",
+    "What is your most unusual food combination?",
+    "Which movie always makes you laugh?",
+    "What was your most spontaneous trip?",
+    "Which three things would you take to a deserted island?",
+    "What is your hidden talent?",
+    "Which celebrity would you love to meet?",
+    "What is the funniest nickname you have ever had?",
+    "If you could wake up anywhere tomorrow, where would it be?",
+  ],
+};
+
 export default function Game() {
   const location =
     useLocation();
@@ -191,6 +224,19 @@ export default function Game() {
     useMemo(() => {
       if (!pools) {
         return [];
+      }
+      // Kostenloser Fun-Modus: ausschließlich diese 12 festen Karten.
+      // Keine anderen Fragen, auch keine eigenen Karten, hinzufügen.
+      // Premium-Zugänge und die bestehende Testphase bleiben unverändert.
+      const isFreeFunMode =
+        !hotMode &&
+        !hardcoreMode &&
+        !hasFullClassicAccess &&
+        !usesTrial;
+      if (isFreeFunMode) {
+        return FREE_FUN_QUESTIONS[lang === "en" ? "en" : "de"].map(
+          (text) => ({ text, category: 1 })
+        );
       }
       const q =
         Array.isArray(pools.questions)
@@ -423,6 +469,9 @@ export default function Game() {
       customQuestions,
       players.length,
       recentQuestionKeys,
+      hotMode,
+      hardcoreMode,
+      lang,
     ]);
   /*
    * Dieses Deck als aktuelles Spiel
