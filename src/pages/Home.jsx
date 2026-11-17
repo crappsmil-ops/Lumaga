@@ -33,7 +33,7 @@ export default function Home() {
     toast({
       description:
         lang === "de"
-          ? "Die App-Bewertung ist in der installierten Android- oder iOS-App verfügbar."
+          ? "Die App-Bewertung ist in der installierten Android- oder iOS-App verfÃ¼gbar."
           : "App rating is available in the installed Android or iOS app.",
     });
   };
@@ -57,8 +57,8 @@ export default function Home() {
             className="px-2.5 py-1 rounded-lg bg-secondary hover:bg-secondary/80 text-xs font-heading font-bold transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             {lang === "de"
-              ? "🇺🇸 EN"
-              : "🇩🇪 DE"}
+              ? "ðŸ‡ºðŸ‡¸ EN"
+              : "ðŸ‡©ðŸ‡ª DE"}
           </button>
 
           <Link
@@ -203,20 +203,6 @@ export default function Home() {
                 )}
               </Button>
             </Link>
-
-            <button
-              type="button"
-              onClick={handleReview}
-              className="w-full h-14 mt-3 flex items-center justify-center rounded-2xl border-2 border-primary/30 text-lg font-heading font-bold text-foreground hover:bg-primary/10 transition-colors"
-            >
-              <Star className="w-5 h-5 mr-2" />
-
-              
-{lang === "de"
-  ? "Feedback geben"
-  : "Send feedback"}
-
-            </button>
           </motion.div>
         </motion.div>
       </div>
