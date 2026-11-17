@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/lib/LanguageContext";
 import { useLocalPlayerSession } from "@/lib/LocalPlayerSessionContext";
@@ -172,6 +172,41 @@ const questions = {
   ],
 };
 
+// Die Frage aus Spiel 1 darf in Spiel 4 wiederkehren.
+// Deshalb bleiben nur die ZWEI vorherigen Spiele gesperrt.
+const QUESTIONS_PER_GAME = 20;
+const STORAGE_KEY = "lumaga-wer-wuerde-v2";
+
+function shuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function newQuestionSelection(history, questionCount) {
+  const blocked = new Set(history.slice(-2).flat());
+  const available = Array.from({ length: questionCount }, (_, i) => i)
+    .filter((i) => !blocked.has(i));
+
+  if (available.length < QUESTIONS_PER_GAME) {
+    throw new Error("Nicht genügend unterschiedliche Fragen vorhanden.");
+  }
+  return shuffle(available).slice(0, QUESTIONS_PER_GAME);
+}
+
+function readSavedGame() {
+  try {
+    const data = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "null");
+    if (data && Array.isArray(data.history)) return data;
+  } catch {
+    // Bei deaktiviertem localStorage startet das Spiel normal im Speicher.
+  }
+  return { history: [], active: null };
+}
+
 export default function WerWuerdeGame() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -184,60 +219,90 @@ export default function WerWuerdeGame() {
       : sessionPlayers || [];
 
   const isEnglish = lang === "en";
-  const cards = questions[isEnglish ? "en" : "de"];
+  const allCards = questions[isEnglish ? "en" : "de"];
+  const playerKey = JSON.stringify(players.map((p) => [p.name, p.avatar]));
 
-  const [round, setRound] = useState(0);
-  const [voterIndex, setVoterIndex] = useState(0);
-  const [votes, setVotes] = useState(
-    () => Array(players.length).fill(0)
-  );
-  const [scores, setScores] = useState(
-    () => Array(players.length).fill(0)
-  );
-  const [finished, setFinished] = useState(false);
+  const [game, setGame] = useState(() => {
+    const saved = readSavedGame();
+    const history = saved.history.slice(-2);
+    const active = saved.active;
+    if (
+      active &&
+      active.playerKey === playerKey &&
+      Array.isArray(active.questionIds) &&
+      active.questionIds.length === QUESTIONS_PER_GAME &&
+      active.questionIds.every((id) => Number.isInteger(id) && id >= 0 && id < questions.de.length)
+    ) {
+      return { ...active, history };
+    }
+    return {
+      history,
+      playerKey,
+      questionIds: newQuestionSelection(history, questions.de.length),
+      round: 0,
+      voterIndex: 0,
+      votes: Array(players.length).fill(0),
+      scores: Array(players.length).fill(0),
+      finished: false,
+    };
+  });
 
+  // Fortschritt und Fragenhistorie bleiben auch nach Neuladen erhalten.
+  useEffect(() => {
+    try {
+      const { history, ...active } = game;
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ history, active }));
+    } catch {
+      // Das Spiel bleibt auch ohne localStorage nutzbar.
+    }
+  }, [game]);
+
+  const { round, voterIndex, votes, scores, finished, questionIds } = game;
+  const cards = questionIds.map((id) => allCards[id]);
   const roundComplete = voterIndex >= players.length;
-  const gameComplete = round >= cards.length;
+  const gameComplete = finished || round >= QUESTIONS_PER_GAME;
 
   const voteFor = (targetIndex) => {
     if (roundComplete || gameComplete) return;
-
-    setVotes((previous) =>
-      previous.map((count, index) =>
+    setGame((prev) => ({
+      ...prev,
+      votes: prev.votes.map((count, index) =>
         index === targetIndex ? count + 1 : count
-      )
-    );
-
-    setVoterIndex((previous) => previous + 1);
+      ),
+      voterIndex: prev.voterIndex + 1,
+    }));
   };
 
   const nextRound = () => {
+    if (!roundComplete || finished) return;
     const highest = Math.max(...votes);
-
-    setScores((previous) =>
-      previous.map((score, index) =>
-        highest > 0 && votes[index] === highest
-          ? score + 1
-          : score
-      )
-    );
-
-    setVotes(Array(players.length).fill(0));
-    setVoterIndex(0);
-
-    if (round + 1 >= cards.length) {
-      setFinished(true);
-    } else {
-      setRound((previous) => previous + 1);
-    }
+    setGame((prev) => ({
+      ...prev,
+      scores: prev.scores.map((score, index) =>
+        highest > 0 && prev.votes[index] === highest ? score + 1 : score
+      ),
+      votes: Array(players.length).fill(0),
+      voterIndex: 0,
+      finished: prev.round + 1 >= QUESTIONS_PER_GAME,
+      round: prev.round + 1 >= QUESTIONS_PER_GAME ? prev.round : prev.round + 1,
+    }));
   };
 
   const restart = () => {
-    setRound(0);
-    setVoterIndex(0);
-    setVotes(Array(players.length).fill(0));
-    setScores(Array(players.length).fill(0));
-    setFinished(false);
+    setGame((prev) => {
+      // Das gerade beendete Spiel wird in die Historie übernommen.
+      const history = [...prev.history, prev.questionIds].slice(-2);
+      return {
+        history,
+        playerKey,
+        questionIds: newQuestionSelection(history, questions.de.length),
+        round: 0,
+        voterIndex: 0,
+        votes: Array(players.length).fill(0),
+        scores: Array(players.length).fill(0),
+        finished: false,
+      };
+    });
   };
 
   if (players.length < 2) {
