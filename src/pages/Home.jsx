@@ -56,9 +56,7 @@ export default function Home() {
             aria-label="Sprache wechseln"
             className="px-2.5 py-1 rounded-lg bg-secondary hover:bg-secondary/80 text-xs font-heading font-bold transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
-            {lang === "de"
-              ? "🇺🇸 EN"
-              : "🇩🇪 DE"}
+            {lang === "de" ? "EN" : "DE"}
           </button>
 
           <Link
