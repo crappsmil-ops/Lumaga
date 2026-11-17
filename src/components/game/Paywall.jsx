@@ -36,12 +36,9 @@ export default function Paywall({
               ? "Hardcore Modus freischalten 💀"
               : "Unlock Hardcore Mode 💀",
           features: [
-            t(lang, "info_chaos_1"),
-            t(lang, "info_chaos_2"),
-            t(lang, "info_chaos_5"),
-          lang === "de"
-            ? "Einmalige Zahlung – dauerhaft freigeschaltet"
-            : "One-time payment – permanently unlocked",
+            (lang === "de" ? "Verrückte Aufgaben und extreme Challenges" : "Crazy tasks and extreme challenges"),
+            (lang === "de" ? "Für alle, die keine Herausforderung scheuen" : "For those who love a challenge"),
+            (lang === "de" ? "Einmal zahlen, dauerhaft spielen" : "Pay once, play forever"),
           ],
         }
       : mode === "custom"
@@ -70,9 +67,9 @@ export default function Paywall({
               "paywall_subtitle"
             ),
             features: [
-              t(lang, "paywall_feature_wild"),
-              t(lang, "paywall_feature_unlock"),
-              t(lang, "paywall_feature_onetime"),
+              (lang === "de" ? "Pikante Fragen und mutige Herausforderungen" : "Spicy questions and daring challenges"),
+              (lang === "de" ? "Für Partys mit mehr Nervenkitzel" : "For parties with extra excitement"),
+              (lang === "de" ? "Einmal zahlen, dauerhaft spielen" : "Pay once, play forever"),
             ],
           };
 
