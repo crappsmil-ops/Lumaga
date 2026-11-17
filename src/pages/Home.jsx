@@ -33,7 +33,7 @@ export default function Home() {
     toast({
       description:
         lang === "de"
-          ? "Die App-Bewertung ist in der installierten Android- oder iOS-App verfÃ¼gbar."
+          ? "Die App-Bewertung ist in der installierten Android- oder iOS-App verfügbar."
           : "App rating is available in the installed Android or iOS app.",
     });
   };
@@ -57,8 +57,8 @@ export default function Home() {
             className="px-2.5 py-1 rounded-lg bg-secondary hover:bg-secondary/80 text-xs font-heading font-bold transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             {lang === "de"
-              ? "ðŸ‡ºðŸ‡¸ EN"
-              : "ðŸ‡©ðŸ‡ª DE"}
+              ? "🇺🇸 EN"
+              : "🇩🇪 DE"}
           </button>
 
           <Link
