@@ -99,7 +99,10 @@ export default function Settings() {
     setIsHardcorePremium,
     partyEntitlements,
     refreshPremiumStatus,
+    revalidateWebPurchase,
   } = usePremium();
+
+  const isWebStore = Capacitor.getPlatform() === "web";
 
   const hasBundle =
     isHotPremium &&
@@ -246,42 +249,47 @@ useEffect(() => {
           res.ok &&
           res.purchased
         ) {
-          let info =
-            await refreshPremiumStatus(
-              res.customerInfo
-            );
-
-          if (!bundleIsActive(info)) {
-            await waitForRevenueCat(350);
-            info =
-              await refreshPremiumStatus(
-                null,
-                true
-              );
-          }
-
-          if (!bundleIsActive(info)) {
-            await waitForRevenueCat(900);
-            info =
-              await refreshPremiumStatus(
-                null,
-                true
-              );
-          }
-
-          if (bundleIsActive(info)) {
-            setBundleMsg(
-              t(
-                lang,
-                "local_bundle_success"
-              )
-            );
+          if (isWebStore) {
+            await revalidateWebPurchase();
+            setBundleMsg(t(lang, “local_bundle_success”));
           } else {
-            setBundleMsg(
-              lang === "en"
-                ? "Purchase completed. The unlock is still syncing. Please use Restore purchases once."
-                : "Kauf abgeschlossen. Die Freischaltung wird noch synchronisiert. Bitte einmal „Käufe wiederherstellen“ verwenden."
-            );
+            let info =
+              await refreshPremiumStatus(
+                res.customerInfo
+              );
+
+            if (!bundleIsActive(info)) {
+              await waitForRevenueCat(350);
+              info =
+                await refreshPremiumStatus(
+                  null,
+                  true
+                );
+            }
+
+            if (!bundleIsActive(info)) {
+              await waitForRevenueCat(900);
+              info =
+                await refreshPremiumStatus(
+                  null,
+                  true
+                );
+            }
+
+            if (bundleIsActive(info)) {
+              setBundleMsg(
+                t(
+                  lang,
+                  “local_bundle_success”
+                )
+              );
+            } else {
+              setBundleMsg(
+                lang === “en”
+                  ? “Purchase completed. The unlock is still syncing. Please use Restore purchases once.”
+                  : “Kauf abgeschlossen. Die Freischaltung wird noch synchronisiert. Bitte einmal „Käufe wiederherstellen” verwenden.”
+              );
+            }
           }
         } else if (
           res.reason ===
@@ -324,6 +332,12 @@ useEffect(() => {
           res.ok &&
           res.purchased
         ) {
+          if (isWebStore) {
+            await revalidateWebPurchase();
+            setBundleMsg(t(lang, "settings_restore_success"));
+            return;
+          }
+
           let info =
             await refreshPremiumStatus(
               res.customerInfo

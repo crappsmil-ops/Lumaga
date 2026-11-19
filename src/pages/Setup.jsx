@@ -219,6 +219,7 @@ export default function Setup() {
     activatePartyPass,
 
     refreshPremiumStatus,
+    revalidateWebPurchase,
 
   } = usePremium();
 
@@ -604,7 +605,12 @@ if (
 
     if (!partyPurchase) return false;
 
-
+    if (isWebStore) {
+      // On web, refreshPremiumStatus is a no-op. Run the server-side auth
+      // check directly so entitlements are applied before returning.
+      await revalidateWebPurchase();
+      return true;
+    }
 
     let info = await refreshPremiumStatus(initialInfo);
 

@@ -1221,6 +1221,9 @@ const custom =
     };
   }, []);
 
+  // Ref so the function can be called from outside the effect (e.g. after a purchase).
+  const verifyWebPermanentRef = useRef(null);
+
   // Web: server-side check for permanent premium modes.
   // Uses the signed session cookie to ask /api/purchase-authorization which
   // products this browser is authorised for. Re-checks on visibility change so
@@ -1293,6 +1296,8 @@ const custom =
       }
     }
 
+    verifyWebPermanentRef.current = verifyWebPermanent;
+
     void verifyWebPermanent();
 
     function checkWhenVisible() {
@@ -1314,6 +1319,7 @@ const custom =
 
     return () => {
       cancelled = true;
+      verifyWebPermanentRef.current = null;
       window.removeEventListener("pageshow", checkWhenVisible);
       document.removeEventListener("visibilitychange", checkWhenVisible);
       window.removeEventListener("lumaga:revalidate-purchases", handleRevalidate);
@@ -1389,8 +1395,8 @@ const custom =
         refreshPremiumStatus,
 
         revalidateWebPurchase: IS_WEB
-          ? () => window.dispatchEvent(new CustomEvent("lumaga:revalidate-purchases"))
-          : () => {},
+          ? () => verifyWebPermanentRef.current?.() ?? Promise.resolve()
+          : () => Promise.resolve(),
 
       }}
 
