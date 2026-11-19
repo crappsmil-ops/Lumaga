@@ -51,9 +51,15 @@ export async function getVerifiedPurchases(customerId) {
 
   const verified = [];
 
+  const now = new Date();
+
   for (const [entitlementId, entitlement] of Object.entries(entitlements)) {
-    // expires_date is null for lifetime / non-subscription entitlements.
-    if (entitlement.expires_date === null) {
+    // expires_date is null for lifetime purchases; a future date means an active
+    // subscription or a WebBilling product configured with an end date.
+    const expires = entitlement.expires_date;
+    const isActive = expires === null || new Date(expires) > now;
+
+    if (isActive) {
       const productId = ENTITLEMENT_TO_PRODUCT[entitlementId];
       if (productId) verified.push(productId);
     }
