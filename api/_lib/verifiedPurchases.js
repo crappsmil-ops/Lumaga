@@ -43,7 +43,7 @@ export async function getVerifiedPurchases(customerId) {
   }
 
   if (!response.ok) {
-    throw new Error("RevenueCat-Kaufpruefung fehlgeschlagen");
+    throw new Error(`RevenueCat-Kaufpruefung fehlgeschlagen (${response.status})`);
   }
 
   const data = await response.json();
