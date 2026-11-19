@@ -1,7 +1,4 @@
-﻿// Maps RevenueCat entitlement IDs to the product IDs used by the recovery system.
-// Using entitlements (v1 API) is more reliable than product_id lookups across
-// platforms because entitlement IDs are consistent for web billing and mobile.
-const ENTITLEMENT_TO_PRODUCT = Object.freeze({
+﻿const ENTITLEMENT_TO_PRODUCT = Object.freeze({
   hot:        "lumaga_wild",
   hardcore:   "lumaga_chaos",
   mein_deck:  "lumaga_mein_deck",
@@ -21,26 +18,23 @@ export async function getVerifiedPurchases(customerId) {
   }
 
   const apiKey = process.env.REVENUECAT_SECRET_API_KEY;
+  const projectId = process.env.REVENUECAT_PROJECT_ID;
 
-  if (!apiKey) {
-    throw new Error("RevenueCat-Konfiguration fehlt");
-  }
+  if (!apiKey) throw new Error("RevenueCat-Konfiguration fehlt");
+  if (!projectId) throw new Error("RevenueCat-Projekt-ID fehlt");
 
   const response = await fetch(
-    `https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(customerId)}`,
+    `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/customers/${encodeURIComponent(customerId)}`,
     {
       headers: {
         Authorization: `Bearer ${apiKey}`,
         Accept: "application/json",
-        "X-Platform": "web",
       },
       cache: "no-store",
     }
   );
 
-  if (response.status === 404) {
-    return [];
-  }
+  if (response.status === 404) return [];
 
   if (!response.ok) {
     let body = "";
@@ -49,20 +43,26 @@ export async function getVerifiedPurchases(customerId) {
   }
 
   const data = await response.json();
-  const entitlements = data?.subscriber?.entitlements ?? {};
+
+  const rawEntitlements =
+    data?.entitlements?.data ??
+    data?.active_entitlements?.data ??
+    null;
+
+  if (!rawEntitlements) {
+    throw new Error(`RC V2 Struktur unbekannt: ${Object.keys(data).join(", ")}`);
+  }
 
   const verified = [];
-
   const now = new Date();
 
-  for (const [entitlementId, entitlement] of Object.entries(entitlements)) {
-    // expires_date is null for lifetime purchases; a future date means an active
-    // subscription or a WebBilling product configured with an end date.
-    const expires = entitlement.expires_date;
-    const isActive = expires === null || new Date(expires) > now;
+  for (const entitlement of rawEntitlements) {
+    const id = entitlement.identifier ?? entitlement.product_identifier;
+    const expires = entitlement.expires_at ?? entitlement.expires_date ?? null;
+    const isActive = expires === null || new Date(expires * 1000 || expires) > now;
 
-    if (isActive) {
-      const productId = ENTITLEMENT_TO_PRODUCT[entitlementId];
+    if (isActive && id) {
+      const productId = ENTITLEMENT_TO_PRODUCT[id];
       if (productId) verified.push(productId);
     }
   }
