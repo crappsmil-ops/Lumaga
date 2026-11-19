@@ -302,7 +302,7 @@ export function PremiumProvider({
 
   );
 
-  const [premiumStatusLoading, setPremiumStatusLoading] = useState(true);
+  const [premiumStatusLoading, setPremiumStatusLoading] = useState(!IS_WEB);
   // Web: erst einen signierten und serverseitig geprüften Kauf akzeptieren.
   const [webPartyPassChecking, setWebPartyPassChecking] = useState(IS_WEB);
   const [webPartyPassVerificationError, setWebPartyPassVerificationError] =
