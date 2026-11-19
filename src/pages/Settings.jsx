@@ -1,3 +1,4 @@
+import RecoverySettings from "@/components/RecoverySettings";
 import React, { useEffect, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Link } from "react-router-dom";
@@ -634,6 +635,7 @@ useEffect(() => {
             </div>
           </div>
 
+          <RecoverySettings />
           <div className="bg-card border border-border rounded-2xl p-5 mt-8">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-destructive/15 flex items-center justify-center">

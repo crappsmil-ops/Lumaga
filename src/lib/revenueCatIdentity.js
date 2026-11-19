@@ -8,11 +8,9 @@ export function getLumagaCustomerId() {
     return existingId;
   }
 
-  const newId = crypto.randomUUID();
-
-  localStorage.setItem(STORAGE_KEY, newId);
-
-  return newId;
+  throw new Error(
+    "Kauf-Sitzung fehlt. Bitte Internetverbindung prüfen und App neu laden."
+  );
 }
 
 let partySessionPromise = null;

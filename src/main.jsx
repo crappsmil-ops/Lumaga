@@ -1,3 +1,4 @@
+import { prepareNewPurchaseIdentity } from "@/lib/purchaseIdentity";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "@/App.jsx";
@@ -15,13 +16,23 @@ import {
  * damit ein Problem mit IAP niemals den App-Start blockiert.
  */
 
-ReactDOM.createRoot(
-  document.getElementById("root")
-).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+async function startApp() {
+  try {
+    await prepareNewPurchaseIdentity();
+  } catch (error) {
+    console.warn("Kauf-Sitzung konnte nicht vorbereitet werden:", error);
+  }
+
+  ReactDOM.createRoot(
+    document.getElementById("root")
+  ).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}
+
+startApp();
 
 async function initRevenueCat() {
   const platform = Capacitor.getPlatform();

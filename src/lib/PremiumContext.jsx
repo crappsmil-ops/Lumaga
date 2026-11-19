@@ -16,6 +16,8 @@ import React, {
 
 
 import { Purchases } from "@/lib/revenueCatAdapter";
+import { getWebPurchaseAuthorization } from "@/lib/purchaseAuthorization";
+import { getVerifiedPremiumModes } from "@/lib/verifiedPremiumModes";
 import { PRODUCTS } from "@/lib/products";
 import { Capacitor } from "@capacitor/core";
 
@@ -166,6 +168,11 @@ const PremiumContext = createContext({
 
   refreshPremiumStatus: async () => {},
   webPartyPassVerificationError: false,
+  // On web, triggers a fresh server-side authorization check instead of
+  // trusting RevenueCat client-side data directly.  Used by pages that
+  // call purchaseProduct / restorePurchases so that a revoked browser
+  // cannot re-enable premium flags by calling those APIs.
+  revalidateWebPurchase: () => {},
 
 });
 
@@ -303,6 +310,9 @@ export function PremiumProvider({
 
 
 
+  // On web, permanent premium flags MUST NOT be initialised from localStorage.
+  // localStorage persists stale state after a recovery redemption revokes this
+  // browser. The authoritative source on web is /api/purchase-authorization.
   const [
 
     isHotPremium,
@@ -311,7 +321,7 @@ export function PremiumProvider({
 
   ] = useState(() =>
 
-    readStored("premium_hot")
+    IS_WEB ? false : readStored("premium_hot")
 
   );
 
@@ -325,7 +335,7 @@ export function PremiumProvider({
 
   ] = useState(() =>
 
-    readStored("premium_custom")
+    IS_WEB ? false : readStored("premium_custom")
 
   );
 
@@ -339,9 +349,12 @@ export function PremiumProvider({
 
   ] = useState(() =>
 
-    readStored("premium_hardcore")
+    IS_WEB ? false : readStored("premium_hardcore")
 
   );
+
+  // Web: tracks whether the server-side authorisation check is still in flight.
+  const [webPermanentChecking, setWebPermanentChecking] = useState(IS_WEB);
 
 
 
@@ -381,39 +394,19 @@ export function PremiumProvider({
 
 
 
-  const setIsHotPremium =
+  // On web, never write permanent premium flags to localStorage.
+  // localStorage writes would re-activate a revoked browser on the next load.
+  const setIsHotPremium = IS_WEB
+    ? (val) => setHot(Boolean(val))
+    : makeSetter("premium_hot", setHot);
 
-    makeSetter(
+  const setIsCustomPremium = IS_WEB
+    ? (val) => setCustom(Boolean(val))
+    : makeSetter("premium_custom", setCustom);
 
-      "premium_hot",
-
-      setHot
-
-    );
-
-
-
-  const setIsCustomPremium =
-
-    makeSetter(
-
-      "premium_custom",
-
-      setCustom
-
-    );
-
-
-
-  const setIsHardcorePremium =
-
-    makeSetter(
-
-      "premium_hardcore",
-
-      setHard
-
-    );
+  const setIsHardcorePremium = IS_WEB
+    ? (val) => setHard(Boolean(val))
+    : makeSetter("premium_hardcore", setHard);
 
 
 
@@ -636,6 +629,13 @@ const custom =
         forceFresh = false
 
       ) => {
+
+        // On web, permanent premium status is managed by the server-side
+        // purchase-authorization endpoint (via the web permanent check effect below).
+        // Calling RevenueCat ClientInfo here would re-activate a revoked browser.
+        if (IS_WEB) {
+          return null;
+        }
 
         setPremiumStatusLoading(true);
 
@@ -1221,6 +1221,105 @@ const custom =
     };
   }, []);
 
+  // Web: server-side check for permanent premium modes.
+  // Uses the signed session cookie to ask /api/purchase-authorization which
+  // products this browser is authorised for. Re-checks on visibility change so
+  // a revoked browser is locked out as soon as it regains focus.
+  useEffect(() => {
+    if (!IS_WEB) return undefined;
+
+    let cancelled = false;
+    let checkInFlight = null;
+
+    async function verifyWebPermanent() {
+      if (checkInFlight) return checkInFlight;
+
+      setWebPermanentChecking(true);
+
+      const task = (async () => {
+        try {
+          const auth = await getWebPurchaseAuthorization();
+          if (cancelled) return;
+
+          if (!auth.authorized) {
+            // Revoked browser — clear everything and block access.
+            setHot(false);
+            setHard(false);
+            setCustom(false);
+            setPartyEntitlements({ ...EMPTY_PARTY_ENTITLEMENTS });
+            return;
+          }
+
+          if (auth.recoveryManaged) {
+            // Server is authoritative for recovery-managed browsers.
+            const modes = getVerifiedPremiumModes(auth.products);
+            setHot(modes.hot);
+            setHard(modes.hardcore);
+            setCustom(modes.mein_deck);
+            setPartyEntitlements({
+              wer_wuerde: modes.wer_wuerde,
+              wkw: modes.wkw,
+              bluff: modes.bluff,
+              pantomime: modes.pantomime,
+              never: modes.never,
+            });
+          } else {
+            // Legacy path: browser not managed by recovery system.
+            // Uses RevenueCat client-side so purchases made under the old
+            // localStorage UUID (≠ session cookie) are still found.
+            try {
+              const result = await Purchases.getCustomerInfo();
+              if (cancelled) return;
+              const ci = unwrapCustomerInfo(result);
+              if (ci) applyCustomerInfo(ci);
+            } catch {
+              // RC unavailable — fail safe, keep all flags false.
+            }
+          }
+        } catch (error) {
+          if (cancelled) return;
+          console.error("Web-Kaufberechtigung fehlgeschlagen:", error);
+          // Fail safe: keep all flags false. Never grant access on error.
+        } finally {
+          if (!cancelled) setWebPermanentChecking(false);
+        }
+      })();
+
+      checkInFlight = task;
+      try {
+        await task;
+      } finally {
+        if (checkInFlight === task) checkInFlight = null;
+      }
+    }
+
+    void verifyWebPermanent();
+
+    function checkWhenVisible() {
+      if (document.visibilityState !== "visible") return;
+      void verifyWebPermanent();
+    }
+
+    // Pages that call purchaseProduct / restorePurchases dispatch this event
+    // so the server-side check re-runs immediately after a purchase instead of
+    // waiting for a focus/visibility change.  This prevents revoked browsers
+    // from re-enabling premium flags by calling those APIs client-side.
+    function handleRevalidate() {
+      void verifyWebPermanent();
+    }
+
+    window.addEventListener("pageshow", checkWhenVisible);
+    document.addEventListener("visibilitychange", checkWhenVisible);
+    window.addEventListener("lumaga:revalidate-purchases", handleRevalidate);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("pageshow", checkWhenVisible);
+      document.removeEventListener("visibilitychange", checkWhenVisible);
+      window.removeEventListener("lumaga:revalidate-purchases", handleRevalidate);
+    };
+  }, []);
+
   // Minutentimer für die Anzeige; zusätzlicher Timeout für den exakten
   // Ablaufzeitpunkt (ohne bis zum nächsten Minutentick zu warten).
   useEffect(() => {
@@ -1244,8 +1343,6 @@ const custom =
         )
       : 0;
 
-const TEST_PREMIUM = import.meta.env.DEV && true;
-
   return (
 
     <PremiumContext.Provider
@@ -1254,7 +1351,7 @@ const TEST_PREMIUM = import.meta.env.DEV && true;
 
         partyEntitlements,
 
-        premiumStatusLoading: premiumStatusLoading || webPartyPassChecking,
+        premiumStatusLoading: premiumStatusLoading || webPartyPassChecking || webPermanentChecking,
         webPartyPassVerificationError,
 
         isHotPremium,
@@ -1290,6 +1387,10 @@ const TEST_PREMIUM = import.meta.env.DEV && true;
 
 
         refreshPremiumStatus,
+
+        revalidateWebPurchase: IS_WEB
+          ? () => window.dispatchEvent(new CustomEvent("lumaga:revalidate-purchases"))
+          : () => {},
 
       }}
 

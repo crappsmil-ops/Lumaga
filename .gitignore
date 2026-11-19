@@ -76,3 +76,5 @@ mp_alt/
 *.zip
 CLAUDE_DIFF_LEAVEROOM2.txt
 projektstruktur.txt
+.vercel
+.env*

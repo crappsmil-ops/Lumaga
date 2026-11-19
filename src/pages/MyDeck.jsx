@@ -21,6 +21,7 @@ import { usePremium } from "@/lib/PremiumContext";
 import { useLanguage } from "@/lib/LanguageContext";
 import { t } from "@/lib/i18n";
 import { purchaseProduct, restorePurchases, isIAPAvailable } from "@/lib/iap";
+import { Capacitor } from "@capacitor/core";
 
 import {
   getDecks,
@@ -179,7 +180,8 @@ function AutoGrowTextarea({
 
 export default function MyDeck() {
   const { lang } = useLanguage();
-  const { isCustomPremium, setIsCustomPremium } = usePremium();
+  const { isCustomPremium, setIsCustomPremium, revalidateWebPurchase } = usePremium();
+  const IS_WEB = Capacitor.getPlatform() === "web";
 
   const [decks, setDecks] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
@@ -659,9 +661,11 @@ const hasRequiredWkwOptions = () =>
         if (
           active.mein_deck
         ) {
-          setIsCustomPremium(
-            true
-          );
+          if (IS_WEB) {
+            revalidateWebPurchase();
+          } else {
+            setIsCustomPremium(true);
+          }
 
           setMsg(
             lang === "de"
@@ -707,7 +711,11 @@ const hasRequiredWkwOptions = () =>
           ?.active || {};
 
       if (restoredActive.mein_deck) {
-        setIsCustomPremium(true);
+        if (IS_WEB) {
+          revalidateWebPurchase();
+        } else {
+          setIsCustomPremium(true);
+        }
         setMsg("Mein Deck ist bereits freigeschaltet.");
         return;
       }
@@ -723,7 +731,11 @@ const hasRequiredWkwOptions = () =>
           ?.active || {};
 
       if (active.mein_deck) {
-        setIsCustomPremium(true);
+        if (IS_WEB) {
+          revalidateWebPurchase();
+        } else {
+          setIsCustomPremium(true);
+        }
         setMsg(
           t(
             lang,
