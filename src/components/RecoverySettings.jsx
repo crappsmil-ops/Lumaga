@@ -63,8 +63,10 @@ export default function RecoverySettings() {
     setBusy(true);
     setMessage({ text: "", isError: false });
 
+    let sessionId = null;
+
     try {
-      await getPurchaseSession();
+      sessionId = await getPurchaseSession();
 
       const result = await request("/api/recovery-issue", {});
 
@@ -80,12 +82,15 @@ export default function RecoverySettings() {
       setCode(result.code);
       setOk("Dein Wiederherstellungscode wurde erstellt. Bewahre ihn sicher auf.");
     } catch (error) {
-      // Check if this is a legacy buyer whose old UUID can't be automatically
-      // linked. Manual migration via support is required.
-      if (
+      // A legacy buyer has a localStorage customer ID that DIFFERS from their
+      // current session ID. If they match, the user simply has no purchase yet.
+      const legacyId = getLegacyCustomerId();
+      const isLegacyBuyer =
         error.message.includes("Kein berechtigter Dauerkauf") &&
-        getLegacyCustomerId() !== null
-      ) {
+        legacyId !== null &&
+        legacyId !== sessionId;
+
+      if (isLegacyBuyer) {
         setErr(
           "Deine Käufe wurden mit einem älteren Konto verknüpft, " +
           "das nicht automatisch übertragen werden kann. " +
