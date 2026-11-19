@@ -1,4 +1,4 @@
-import RecoverySettings from "@/components/RecoverySettings";
+﻿import RecoverySettings from "@/components/RecoverySettings";
 import React, { useEffect, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Link } from "react-router-dom";
@@ -251,7 +251,7 @@ useEffect(() => {
         ) {
           if (isWebStore) {
             await revalidateWebPurchase();
-            setBundleMsg(t(lang, “local_bundle_success”));
+            setBundleMsg(t(lang, "local_bundle_success"));
           } else {
             let info =
               await refreshPremiumStatus(
@@ -280,14 +280,14 @@ useEffect(() => {
               setBundleMsg(
                 t(
                   lang,
-                  “local_bundle_success”
+                  "local_bundle_success"
                 )
               );
             } else {
               setBundleMsg(
-                lang === “en”
-                  ? “Purchase completed. The unlock is still syncing. Please use Restore purchases once.”
-                  : “Kauf abgeschlossen. Die Freischaltung wird noch synchronisiert. Bitte einmal „Käufe wiederherstellen” verwenden.”
+                lang === "en"
+                  ? "Purchase completed. The unlock is still syncing. Please use Restore purchases once."
+                  : "Kauf abgeschlossen. Die Freischaltung wird noch synchronisiert. Bitte einmal „Käufe wiederherstellen“ verwenden."
               );
             }
           }
