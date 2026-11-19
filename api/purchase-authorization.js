@@ -40,12 +40,17 @@ export async function handlePurchaseAuthorization(req, res, dependencies = {}) {
       });
     }
 
-    // Eine fremde Kundenkennung darf nie frei vom Client kommen.
-    const products = await (dependencies.verifyPurchases ?? getVerifiedPurchases)(customerId);
+    const recoveryManaged = activeSession !== null && activeSession !== undefined;
+
+    // Only fetch verified products for recovery-managed browsers — the client
+    // falls back to the RevenueCat SDK for non-managed browsers anyway.
+    const products = recoveryManaged
+      ? await (dependencies.verifyPurchases ?? getVerifiedPurchases)(customerId)
+      : [];
 
     return res.status(200).json({
       authorized: true,
-      recoveryManaged: activeSession !== null && activeSession !== undefined,
+      recoveryManaged,
       products,
     });
   } catch (error) {
