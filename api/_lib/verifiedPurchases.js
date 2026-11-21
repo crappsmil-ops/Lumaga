@@ -44,22 +44,25 @@ export async function getVerifiedPurchases(customerId) {
 
   const data = await response.json();
 
+  const ae = data?.active_entitlements;
   const rawEntitlements =
+    (Array.isArray(ae) ? ae : null) ??
+    ae?.data ??
+    ae?.items ??
     data?.entitlements?.data ??
-    data?.active_entitlements?.data ??
     null;
 
   if (!rawEntitlements) {
-    throw new Error(`RC V2 Struktur unbekannt: ${Object.keys(data).join(", ")}`);
+    throw new Error(`RC V2 ae: ${JSON.stringify(ae)?.slice(0, 300)}`);
   }
 
   const verified = [];
   const now = new Date();
 
   for (const entitlement of rawEntitlements) {
-    const id = entitlement.identifier ?? entitlement.product_identifier;
+    const id = entitlement.identifier ?? entitlement.product_identifier ?? entitlement.entitlement_identifier;
     const expires = entitlement.expires_at ?? entitlement.expires_date ?? null;
-    const isActive = expires === null || new Date(expires * 1000 || expires) > now;
+    const isActive = expires === null || new Date(typeof expires === "number" ? expires * 1000 : expires) > now;
 
     if (isActive && id) {
       const productId = ENTITLEMENT_TO_PRODUCT[id];
