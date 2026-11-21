@@ -84,5 +84,9 @@ export async function getVerifiedPurchases(customerId) {
     }
   }
 
+  if (verified.length === 0) {
+    throw new Error(`Kein Match. idMap: ${JSON.stringify(idToIdentifier).slice(0, 300)}, active: ${JSON.stringify(activeList).slice(0, 200)}`);
+  }
+
   return verified;
 }
