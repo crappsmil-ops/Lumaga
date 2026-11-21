@@ -59,11 +59,23 @@ export async function checkLumagaPartyPass() {
   };
 }
 
+// Bisheriger Test-Link (RevenueCat-Sandbox, kein echtes Geld).
+// Wird nur genutzt, solange VITE_REVENUECAT_PARTY_PASS_CHECKOUT_URL
+// nicht gesetzt ist.
+const SANDBOX_PARTY_PASS_CHECKOUT =
+  "https://pay.rev.cat/sandbox/pvxxufauyosngefk/";
+
 export async function getLumagaPartyPassCheckoutUrl() {
   const appUserId = await getLumagaPartySession();
 
-  const sandboxCheckout =
-    "https://pay.rev.cat/sandbox/pvxxufauyosngefk/";
+  // Echter Kauf-Link aus dem RevenueCat-Dashboard (Web Purchase Link,
+  // Production), z. B. "https://pay.rev.cat/<token>/".
+  const configured =
+    import.meta.env.VITE_REVENUECAT_PARTY_PASS_CHECKOUT_URL?.trim();
 
-  return sandboxCheckout + encodeURIComponent(appUserId);
+  const base = configured
+    ? configured.replace(/\/?$/, "/")
+    : SANDBOX_PARTY_PASS_CHECKOUT;
+
+  return base + encodeURIComponent(appUserId);
 }
