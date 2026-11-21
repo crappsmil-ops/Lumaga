@@ -2,6 +2,20 @@ import { prepareNewPurchaseIdentity } from "@/lib/purchaseIdentity";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "@/App.jsx";
+
+// Schriftarten werden mit der App ausgeliefert (kein Abruf bei Google Fonts).
+import "@fontsource/outfit/300.css";
+import "@fontsource/outfit/400.css";
+import "@fontsource/outfit/500.css";
+import "@fontsource/outfit/600.css";
+import "@fontsource/outfit/700.css";
+import "@fontsource/outfit/800.css";
+import "@fontsource/outfit/900.css";
+import "@fontsource/space-grotesk/300.css";
+import "@fontsource/space-grotesk/400.css";
+import "@fontsource/space-grotesk/500.css";
+import "@fontsource/space-grotesk/600.css";
+import "@fontsource/space-grotesk/700.css";
 import "@/index.css";
 
 import { Capacitor } from "@capacitor/core";

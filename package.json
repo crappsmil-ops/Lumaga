@@ -16,6 +16,8 @@
     "@base44/sdk": "^0.8.43",
     "@base44/vite-plugin": "^1.0.30",
     "@capacitor/core": "^8.5.0",
+    "@fontsource/outfit": "^5.3.0",
+    "@fontsource/space-grotesk": "^5.3.0",
     "@hookform/resolvers": "^4.1.2",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.6",
