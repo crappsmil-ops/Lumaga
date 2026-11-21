@@ -70,5 +70,9 @@ export async function getVerifiedPurchases(customerId) {
     }
   }
 
+  if (verified.length === 0) {
+    throw new Error(`Entitlements leer. Raw: ${JSON.stringify(rawEntitlements).slice(0, 400)}`);
+  }
+
   return verified;
 }
