@@ -48,7 +48,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Die Webversion wird über Vercel bereitgestellt. Beim Start der Webapp wird eine Verbindung zu Base44 aufgebaut, um technische App-Einstellungen abzurufen; dabei ist außerdem eine Nutzungsanalyse von Base44 aktiv (siehe Abschnitt 9). Schriftarten werden von Google Fonts geladen (siehe Abschnitt 10). Für die Webversion werden serverseitige Kaufprüfungen über Vercel-Funktionen bereitgestellt. Für die freiwillige Wiederherstellung von Käufen per Wiederherstellungscode wird die Datenbank Upstash Redis eingesetzt (siehe Abschnitt 5). Für das Support- und Feedbackfenster wird zusätzlich Cloudflare Workers als technischer Endpunkt eingesetzt; der Versand der Supportnachricht erfolgt anschließend über den E-Mail-Versanddienst Resend."
+      "text": "Die Webversion wird über Vercel bereitgestellt. Die Webapp setzt keine Analyse-, Werbe- oder Tracking-Dienste ein. Die Schriftarten werden zusammen mit der Webapp über Vercel ausgeliefert; es werden keine Schriftarten von Servern Dritter geladen. Für die Webversion werden serverseitige Kaufprüfungen über Vercel-Funktionen bereitgestellt. Für die freiwillige Wiederherstellung von Käufen per Wiederherstellungscode wird die Datenbank Upstash Redis eingesetzt (siehe Abschnitt 5). Für das Support- und Feedbackfenster wird zusätzlich Cloudflare Workers als technischer Endpunkt eingesetzt; der Versand der Supportnachricht erfolgt anschließend über den E-Mail-Versanddienst Resend."
     },
     {
       "type": "p",
@@ -72,7 +72,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Der Betreiber unterhält keine eigenen physischen Server. Die Webapp wird über Vercel bereitgestellt. Hinzu kommen Base44 (bei jedem App-Start), Google Fonts (Schriftarten), Upstash Redis (Kauf-Wiederherstellung) sowie Cloudflare Workers und Resend (nur bei Support- und Feedbackanfragen)."
+      "text": "Der Betreiber unterhält keine eigenen physischen Server. Die Webapp wird über Vercel bereitgestellt. Hinzu kommen Upstash Redis (Kauf-Wiederherstellung) sowie Cloudflare Workers und Resend (nur bei Support- und Feedbackanfragen)."
     },
     {
       "type": "p",
@@ -244,7 +244,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Die selbst erstellten Inhalte werden nicht dauerhaft an den Betreiber oder an Base44 übertragen oder dort gespeichert."
+      "text": "Die selbst erstellten Inhalte werden nicht dauerhaft an den Betreiber übertragen oder dort gespeichert."
     },
     {
       "type": "p",
@@ -401,39 +401,19 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "9. Vercel und Base44 als technische Dienstleister"
+      "text": "9. Hosting durch Vercel"
     },
     {
       "type": "p",
-      "text": "Die Webversion von Lumaga wird über Vercel gehostet. Anbieter ist Vercel Inc., USA. Bei jedem Webseitenaufruf können Vercel und technische Unterauftragnehmer Verbindungs- und Sicherheitsdaten verarbeiten. Lumaga wurde unter Nutzung von Base44 entwickelt; bei jedem Start der Webapp werden Daten an Base44 übermittelt."
+      "text": "Die Webversion von Lumaga wird über Vercel gehostet. Anbieter ist Vercel Inc., USA. Bei jedem Webseitenaufruf können Vercel und technische Unterauftragnehmer Verbindungs- und Sicherheitsdaten verarbeiten."
     },
     {
       "type": "p",
-      "text": "Hierzu gehören insbesondere:"
-    },
-    {
-      "type": "ul",
-      "items": [
-        "der Abruf technischer App-Einstellungen beim Start,",
-        "eine automatische Nutzungsanalyse (siehe unten),",
-        "technische Sicherheits- und Infrastrukturleistungen."
-      ]
-    },
-    {
-      "type": "p",
-      "text": "Die serverseitige Prüfung des 24h-Party-Passes und dauerhafter Käufe erfolgt nicht über Base44, sondern über Vercel mit einer Abfrage bei RevenueCat."
-    },
-    {
-      "type": "p",
-      "text": "Nutzungsanalyse durch Base44: Der in die Webapp eingebundene Programmbaustein von Base44 übermittelt automatisch Nutzungsereignisse an Base44. Dazu gehören ein Ereignis beim Start der App (einschließlich der zuvor besuchten Seite, sogenannter Referrer), ein Lebenszeichen etwa jede Minute, solange die App geöffnet ist, die Dauer der Sitzung, der aufgerufene Seitenpfad und der Zeitpunkt. Hierfür wird im lokalen Speicher des Browsers eine zufällig erzeugte Analyse-Kennung („base44_analytics_session_id“) abgelegt, die bis zur Löschung der Browserdaten bestehen bleibt."
+      "text": "Die serverseitige Prüfung des 24h-Party-Passes und dauerhafter Käufe erfolgt über Vercel mit einer Abfrage bei RevenueCat."
     },
     {
       "type": "p",
       "text": "Supportanfragen, die innerhalb des in der App bereitgestellten Support- und Feedbackfensters möglich sind, werden über Cloudflare Workers und Resend verarbeitet; Einzelheiten hierzu ergeben sich aus Abschnitt 10 und Abschnitt 18."
-    },
-    {
-      "type": "p",
-      "text": "Bei Nutzung dieser Funktionen können technisch erforderliche sowie spielbezogene Daten an Base44 übermittelt und dort verarbeitet werden."
     },
     {
       "type": "p",
@@ -449,35 +429,11 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Beim App-Start und während der Nutzung (Nutzungsanalyse): Nutzer → App → Base44-Infrastruktur."
-    },
-    {
-      "type": "p",
-      "text": "Beim Laden der Schriftarten: Browser → Google Fonts."
-    },
-    {
-      "type": "p",
-      "text": "Zu den über Base44 verarbeiteten Daten können insbesondere technische Verbindungs- und Protokolldaten sowie die oben genannten Nutzungsereignisse gehören."
-    },
-    {
-      "type": "p",
-      "text": "Die Inhalte der Funktion „Mein Deck“ werden nicht dauerhaft über Base44 gespeichert."
-    },
-    {
-      "type": "p",
-      "text": "Base44 kann zur Erbringung seiner Leistungen weitere technische Dienstleister beziehungsweise Unterauftragsverarbeiter einsetzen."
-    },
-    {
-      "type": "p",
-      "text": "Soweit personenbezogene Daten durch Base44 oder andere eingesetzte Dienstleister außerhalb der Europäischen Union oder des Europäischen Wirtschaftsraums verarbeitet werden, erfolgt eine solche Übermittlung nur unter Beachtung der Voraussetzungen der Art. 44 ff. DSGVO."
+      "text": "Soweit personenbezogene Daten durch eingesetzte Dienstleister außerhalb der Europäischen Union oder des Europäischen Wirtschaftsraums verarbeitet werden, erfolgt eine solche Übermittlung nur unter Beachtung der Voraussetzungen der Art. 44 ff. DSGVO."
     },
     {
       "type": "p",
       "text": "Je nach Empfänger und Verarbeitungsort kann eine Übermittlung insbesondere auf Grundlage eines Angemessenheitsbeschlusses der Europäischen Kommission oder geeigneter Garantien wie den von der Europäischen Kommission beschlossenen Standardvertragsklauseln erfolgen."
-    },
-    {
-      "type": "p",
-      "text": "Weitere Informationen zur Verarbeitung personenbezogener Daten durch Base44 sowie zu den von Base44 eingesetzten Unterauftragsverarbeitern ergeben sich aus den jeweils aktuellen Datenschutz- und Vertragsinformationen von Base44."
     },
     {
       "type": "h2",
@@ -510,10 +466,6 @@ export const PRIVACY_POLICY = {
     {
       "type": "p",
       "text": "Upstash, Inc. stellt die Datenbank Upstash Redis bereit, die über Vercel eingebunden ist (Primärregion Frankfurt, Deutschland). Sie wird ausschließlich für die Kauf-Wiederherstellung genutzt; Einzelheiten stehen in Abschnitt 5."
-    },
-    {
-      "type": "p",
-      "text": "Google Fonts: Die Webapp lädt die Schriftarten „Space Grotesk“ und „Outfit“ von Servern der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Dabei werden bei jedem Aufruf die IP-Adresse des Nutzers und technische Angaben zum Browser an Google übermittelt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO; das berechtigte Interesse liegt in einer einheitlichen Darstellung der Webapp. Eine Übermittlung in die USA kann nicht ausgeschlossen werden."
     },
     {
       "type": "p",
@@ -552,7 +504,6 @@ export const PRIVACY_POLICY = {
       "items": [
         "aufgrund gesetzlicher Verpflichtungen,",
         "zur technischen Bereitstellung der App,",
-        "zur technischen Bereitstellung über Base44,",
         "zur Durchführung und Überprüfung von Käufen und zur Kauf-Wiederherstellung,",
         "zur Bearbeitung von Support- und Feedbackanfragen,",
         "zur Fehleranalyse,",
@@ -561,7 +512,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Empfänger können insbesondere Vercel, RevenueCat, Stripe, Base44, Upstash, Google (Google Fonts), Cloudflare Workers und Resend sein. Bei Supportanfragen kann außerdem Google als Anbieter des verwendeten Gmail-Postfachs Empfänger der erforderlichen Daten werden."
+      "text": "Empfänger können insbesondere Vercel, RevenueCat, Stripe, Upstash, Cloudflare Workers und Resend sein. Bei Supportanfragen kann außerdem Google als Anbieter des verwendeten Gmail-Postfachs Empfänger der erforderlichen Daten werden."
     },
     {
       "type": "p",
@@ -614,14 +565,6 @@ export const PRIVACY_POLICY = {
     {
       "type": "p",
       "text": "Die Speicherdauer ist in Abschnitt 5 beschrieben. Die Zähler zur Begrenzung von Einlöseversuchen werden nach 15 Minuten automatisch gelöscht."
-    },
-    {
-      "type": "p",
-      "text": "Nutzungsanalyse (Base44):"
-    },
-    {
-      "type": "p",
-      "text": "Die Analyse-Kennung im Browser bleibt bis zur Löschung der Browserdaten bestehen. Für die bei Base44 gespeicherten Analysedaten gelten die Aufbewahrungsfristen von Base44."
     },
     {
       "type": "p",
@@ -749,7 +692,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Für Daten, die über Vercel, RevenueCat, Stripe, Upstash oder Base44 verarbeitet werden, werden die jeweils verfügbaren technischen Sicherheitsmechanismen der betreffenden Plattform eingesetzt."
+      "text": "Für Daten, die über Vercel, RevenueCat, Stripe oder Upstash verarbeitet werden, werden die jeweils verfügbaren technischen Sicherheitsmechanismen der betreffenden Plattform eingesetzt."
     },
     {
       "type": "p",
@@ -885,7 +828,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Die Supportnachricht wird nicht in der Base44-Datenbank gespeichert. Sie wird über Cloudflare Workers an Resend übertragen und per E-Mail an das Supportpostfach des Betreibers zugestellt."
+      "text": "Die Supportnachricht wird nicht in einer Datenbank des Betreibers gespeichert. Sie wird über Cloudflare Workers an Resend übertragen und per E-Mail an das Supportpostfach des Betreibers zugestellt."
     },
     {
       "type": "p",
