@@ -23,16 +23,18 @@ export async function getVerifiedPurchases(customerId) {
   if (!apiKey) throw new Error("RevenueCat-Konfiguration fehlt");
   if (!projectId) throw new Error("RevenueCat-Projekt-ID fehlt");
 
-  const response = await fetch(
-    `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/customers/${encodeURIComponent(customerId)}`,
-    {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: "application/json",
-      },
-      cache: "no-store",
-    }
+  const url = new URL(
+    `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/customers/${encodeURIComponent(customerId)}`
   );
+  url.searchParams.append("expand[]", "active_entitlements.entitlement");
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      Accept: "application/json",
+    },
+    cache: "no-store",
+  });
 
   if (response.status === 404) return [];
 
@@ -60,7 +62,10 @@ export async function getVerifiedPurchases(customerId) {
   const now = new Date();
 
   for (const entitlement of rawEntitlements) {
-    const id = entitlement.identifier ?? entitlement.product_identifier ?? entitlement.entitlement_identifier;
+    const id = entitlement.entitlement?.identifier
+      ?? entitlement.identifier
+      ?? entitlement.product_identifier
+      ?? entitlement.entitlement_identifier;
     const expires = entitlement.expires_at ?? entitlement.expires_date ?? null;
     const isActive = expires === null || new Date(typeof expires === "number" ? expires * 1000 : expires) > now;
 
