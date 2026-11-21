@@ -67,6 +67,12 @@ const CARD_MODES = [
     de: "Ich habe noch nie",
     en: "Never have I ever",
   },
+  {
+    id: "wer_wuerde",
+    emoji: "🤔",
+    de: "Wer würde",
+    en: "Who would",
+  },
 ];
 
 function getCardMode(card) {
@@ -75,7 +81,7 @@ function getCardMode(card) {
       ? card.mode
       : "";
 
-  return ["wkw", "pantomime", "never"].includes(mode)
+  return ["wkw", "pantomime", "never", "wer_wuerde"].includes(mode)
     ? mode
     : "classic";
 }
@@ -119,6 +125,14 @@ function getCardBadge(card, lang) {
           ? "Ich habe noch nie"
           : "Never have I ever",
       color: "from-emerald-500 to-teal-600",
+    };
+  }
+
+  if (mode === "wer_wuerde") {
+    return {
+      emoji: "🤔",
+      label: lang === "de" ? "Wer würde" : "Who would",
+      color: "from-rose-500 to-pink-600",
     };
   }
 
@@ -1615,7 +1629,11 @@ const hasRequiredWkwOptions = () =>
                                                   ? lang === "de"
                                                     ? "Ich habe noch nie …"
                                                     : "Never have I ever …"
-                                                  : cardType === "action"
+                                                  : cardMode === "wer_wuerde"
+                                                    ? lang === "de"
+                                                      ? "Wer würde eher …"
+                                                      : "Who would rather …"
+                                                    : cardType === "action"
                                                     ? t(
                                                         lang,
                                                         "custom_placeholder_action"

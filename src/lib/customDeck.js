@@ -3,7 +3,7 @@ const LEGACY_KEY = "trinkluma_custom_deck";
 
 import { filterCards, checkContent } from "@/lib/contentFilter";
 
-const SPECIAL_MODES = new Set(["wkw", "pantomime", "never"]);
+const SPECIAL_MODES = new Set(["wkw", "pantomime", "never", "wer_wuerde"]);
 
 export function getCustomCardMode(card) {
   const mode = String(card?.mode || "").trim().toLowerCase();

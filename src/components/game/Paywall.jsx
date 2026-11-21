@@ -68,7 +68,7 @@ export default function Paywall({
             ),
             features: [
               (lang === "de" ? "Pikante Fragen und mutige Herausforderungen" : "Spicy questions and daring challenges"),
-              (lang === "de" ? "Für Partys mit mehr Nervenkitzel" : "For parties with extra excitement"),
+              (lang === "de" ? "Für mehr Nervenkitzel" : "For extra excitement"),
               (lang === "de" ? "Einmal zahlen, dauerhaft spielen" : "Pay once, play forever"),
             ],
           };
