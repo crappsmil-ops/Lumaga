@@ -54,7 +54,6 @@ export async function handleRecoveryIssue(req, res, deps = {}) {
 
     return res.status(503).json({
       error: "Wiederherstellung momentan nicht verfuegbar",
-      detail: error.message,
     });
   }
 }

@@ -36,9 +36,7 @@ export async function getVerifiedPurchases(customerId) {
 
   if (customerRes.status === 404) return [];
   if (!customerRes.ok) {
-    let body = "";
-    try { body = await customerRes.text(); } catch {}
-    throw new Error(`RevenueCat ${customerRes.status}: ${body.slice(0, 200)}`);
+    throw new Error("RevenueCat-Kaufpruefung fehlgeschlagen");
   }
 
   const customerData = await customerRes.json();
@@ -54,17 +52,11 @@ export async function getVerifiedPurchases(customerId) {
   );
 
   if (!entRes.ok) {
-    let body = "";
-    try { body = await entRes.text(); } catch {}
-    throw new Error(`RC entitlements ${entRes.status}: ${body.slice(0, 200)}`);
+    throw new Error("RevenueCat-Entitlements fehlgeschlagen");
   }
 
   const entData = await entRes.json();
   const entItems = entData?.items ?? entData?.data ?? [];
-
-  if (entItems.length === 0) {
-    throw new Error(`Entitlements-Liste leer. Keys: ${Object.keys(entData).join(", ")}, sample: ${JSON.stringify(entData).slice(0, 300)}`);
-  }
 
   // Build map: internal entitlement ID → human identifier (e.g. "hot", "hardcore")
   const idToIdentifier = {};
@@ -88,10 +80,6 @@ export async function getVerifiedPurchases(customerId) {
       const productId = ENTITLEMENT_TO_PRODUCT[identifier];
       if (productId) verified.push(productId);
     }
-  }
-
-  if (verified.length === 0) {
-    throw new Error(`Kein Match. idMap: ${JSON.stringify(idToIdentifier).slice(0, 300)}, active: ${JSON.stringify(activeList).slice(0, 200)}`);
   }
 
   return verified;

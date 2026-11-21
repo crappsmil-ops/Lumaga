@@ -51,8 +51,7 @@ export default function RecoverySettings() {
     const result = await response.json();
 
     if (!response.ok) {
-      const msg = result.error || "Die Anfrage ist fehlgeschlagen.";
-      throw new Error(result.detail ? `${msg}: ${result.detail}` : msg);
+      throw new Error(result.error || "Die Anfrage ist fehlgeschlagen.");
     }
 
     return result;
