@@ -23,60 +23,65 @@ export async function getVerifiedPurchases(customerId) {
   if (!apiKey) throw new Error("RevenueCat-Konfiguration fehlt");
   if (!projectId) throw new Error("RevenueCat-Projekt-ID fehlt");
 
-  const url = new URL(
-    `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/customers/${encodeURIComponent(customerId)}`
+  const headers = {
+    Authorization: `Bearer ${apiKey}`,
+    Accept: "application/json",
+  };
+
+  // Step 1: get customer's active entitlement IDs
+  const customerRes = await fetch(
+    `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/customers/${encodeURIComponent(customerId)}`,
+    { headers, cache: "no-store" }
   );
-  url.searchParams.append("expand[]", "active_entitlements.entitlement");
 
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      Accept: "application/json",
-    },
-    cache: "no-store",
-  });
-
-  if (response.status === 404) return [];
-
-  if (!response.ok) {
+  if (customerRes.status === 404) return [];
+  if (!customerRes.ok) {
     let body = "";
-    try { body = await response.text(); } catch {}
-    throw new Error(`RevenueCat ${response.status}: ${body.slice(0, 200)}`);
+    try { body = await customerRes.text(); } catch {}
+    throw new Error(`RevenueCat ${customerRes.status}: ${body.slice(0, 200)}`);
   }
 
-  const data = await response.json();
+  const customerData = await customerRes.json();
+  const ae = customerData?.active_entitlements;
+  const activeList = Array.isArray(ae) ? ae : ae?.data ?? ae?.items ?? [];
 
-  const ae = data?.active_entitlements;
-  const rawEntitlements =
-    (Array.isArray(ae) ? ae : null) ??
-    ae?.data ??
-    ae?.items ??
-    data?.entitlements?.data ??
-    null;
+  if (activeList.length === 0) return [];
 
-  if (!rawEntitlements) {
-    throw new Error(`RC V2 ae: ${JSON.stringify(ae)?.slice(0, 300)}`);
+  // Step 2: get all project entitlements to map internal IDs → identifiers
+  const entRes = await fetch(
+    `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/entitlements?limit=100`,
+    { headers, cache: "no-store" }
+  );
+
+  if (!entRes.ok) {
+    let body = "";
+    try { body = await entRes.text(); } catch {}
+    throw new Error(`RC entitlements ${entRes.status}: ${body.slice(0, 200)}`);
+  }
+
+  const entData = await entRes.json();
+  const entItems = entData?.items ?? entData?.data ?? [];
+
+  // Build map: internal entitlement ID → human identifier (e.g. "hot", "hardcore")
+  const idToIdentifier = {};
+  for (const ent of entItems) {
+    if (ent.id && ent.identifier) {
+      idToIdentifier[ent.id] = ent.identifier;
+    }
   }
 
   const verified = [];
   const now = new Date();
 
-  for (const entitlement of rawEntitlements) {
-    const id = entitlement.entitlement?.identifier
-      ?? entitlement.identifier
-      ?? entitlement.product_identifier
-      ?? entitlement.entitlement_identifier;
-    const expires = entitlement.expires_at ?? entitlement.expires_date ?? null;
+  for (const ae of activeList) {
+    const identifier = idToIdentifier[ae.entitlement_id] ?? ae.identifier;
+    const expires = ae.expires_at ?? null;
     const isActive = expires === null || new Date(typeof expires === "number" ? expires * 1000 : expires) > now;
 
-    if (isActive && id) {
-      const productId = ENTITLEMENT_TO_PRODUCT[id];
+    if (isActive && identifier) {
+      const productId = ENTITLEMENT_TO_PRODUCT[identifier];
       if (productId) verified.push(productId);
     }
-  }
-
-  if (verified.length === 0) {
-    throw new Error(`Entitlements leer. Raw: ${JSON.stringify(rawEntitlements).slice(0, 400)}`);
   }
 
   return verified;
