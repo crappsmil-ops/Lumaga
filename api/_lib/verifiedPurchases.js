@@ -62,11 +62,17 @@ export async function getVerifiedPurchases(customerId) {
   const entData = await entRes.json();
   const entItems = entData?.items ?? entData?.data ?? [];
 
+  if (entItems.length === 0) {
+    throw new Error(`Entitlements-Liste leer. Keys: ${Object.keys(entData).join(", ")}, sample: ${JSON.stringify(entData).slice(0, 300)}`);
+  }
+
   // Build map: internal entitlement ID → human identifier (e.g. "hot", "hardcore")
   const idToIdentifier = {};
   for (const ent of entItems) {
-    if (ent.id && ent.identifier) {
-      idToIdentifier[ent.id] = ent.identifier;
+    const entId = ent.id ?? ent.entitlement_id;
+    const identifier = ent.identifier ?? ent.lookup_key;
+    if (entId && identifier) {
+      idToIdentifier[entId] = identifier;
     }
   }
 
