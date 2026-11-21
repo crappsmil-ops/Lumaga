@@ -29,6 +29,8 @@ const MyDeck = lazy(() => import("@/pages/MyDeck"));
 const WerKenntWenGame = lazy(() => import("@/pages/WerKenntWenGame"));
 const WerWuerdeGame = lazy(() => import("@/pages/WerWuerdeGame"));
 const BluffWahrheitGame = lazy(() => import("@/pages/BluffWahrheitGame"));
+const UeberDieApp = lazy(() => import("@/pages/UeberDieApp"));
+const Datenschutz = lazy(() => import("@/pages/Datenschutz"));
 
 const SuspenseFallback = () => (
   <div className="fixed inset-0 flex items-center justify-center">
@@ -324,6 +326,16 @@ const AuthenticatedApp = () => {
           <Route
             path="/mydeck"
             element={<MyDeck />}
+          />
+
+          <Route
+            path="/ueber-die-app"
+            element={<UeberDieApp />}
+          />
+
+          <Route
+            path="/datenschutz"
+            element={<Datenschutz />}
           />
 
           <Route

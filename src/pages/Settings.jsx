@@ -479,6 +479,18 @@ useEffect(() => {
             </div>
           </Link>
 
+          <Link to="/ueber-die-app">
+            <div className="bg-card border border-border rounded-2xl p-5 mb-4 flex items-center justify-between hover:border-primary/40 transition-colors cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-muted to-secondary flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <p className="font-heading font-semibold text-base">Über die App</p>
+              </div>
+              <ChevronLeft className="w-5 h-5 text-muted-foreground -rotate-90" />
+            </div>
+          </Link>
+
           <div className="bg-card border border-border rounded-2xl p-5 mt-4">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-accent flex items-center justify-center">
