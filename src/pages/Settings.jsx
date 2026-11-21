@@ -2,16 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Link } from "react-router-dom";
-import {
-  motion,
-  AnimatePresence,
-} from "framer-motion";
+import { motion } from "framer-motion";
 
 import {
   ChevronLeft,
   Bot,
-  Trash2,
-  AlertTriangle,
   Crown,
   Lock,
   RotateCcw,
@@ -19,7 +14,6 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { base44 } from "@/api/base44Client";
 
 import {
   usePremium,
@@ -176,21 +170,6 @@ useEffect(() => {
   const [
     bundleMsg,
     setBundleMsg,
-  ] = useState("");
-
-  const [
-    confirming,
-    setConfirming,
-  ] = useState(false);
-
-  const [
-    deleting,
-    setDeleting,
-  ] = useState(false);
-
-  const [
-    error,
-    setError,
   ] = useState("");
 
   const [
@@ -400,36 +379,6 @@ useEffect(() => {
         setRestoring(
           false
         );
-      }
-    };
-
-  const handleDeleteAccount =
-    async () => {
-      if (!confirming) {
-        setConfirming(true);
-        return;
-      }
-
-      setDeleting(true);
-      setError("");
-
-      try {
-        await base44
-          .functions
-          .invoke(
-            "deleteAccount",
-            {}
-          );
-
-        await base44
-          .auth
-          .logout("/");
-      } catch (e) {
-        setError(
-          "Konto konnte nicht gelöscht werden. Bitte später erneut versuchen."
-        );
-
-        setDeleting(false);
       }
     };
 
@@ -662,114 +611,6 @@ useEffect(() => {
           </div>
 
           <RecoverySettings />
-          <div className="bg-card border border-border rounded-2xl p-5 mt-8">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-destructive/15 flex items-center justify-center">
-                <Trash2 className="w-5 h-5 text-destructive" />
-              </div>
-
-              <div>
-                <p className="font-heading font-semibold text-base">
-                  Konto löschen
-                </p>
-
-                <p className="font-body text-xs text-muted-foreground">
-                  Alle deine Daten
-                  werden entfernt.
-                </p>
-              </div>
-            </div>
-
-            <AnimatePresence>
-              {confirming && (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    height: 0,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    height:
-                      "auto",
-                  }}
-                  exit={{
-                    opacity: 0,
-                    height: 0,
-                  }}
-                  className="overflow-hidden"
-                >
-                  <div className="flex items-start gap-2 bg-destructive/10 rounded-xl p-3 mb-3">
-                    <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
-
-                    <p className="font-body text-xs text-muted-foreground leading-relaxed">
-                      Dies kann{" "}
-                      <strong className="text-foreground">
-                        nicht
-                        rückgängig
-                      </strong>{" "}
-                      gemacht werden.
-                      Dein Konto und
-                      alle zugehörigen
-                      Daten werden
-                      dauerhaft
-                      gelöscht.
-                    </p>
-                  </div>
-
-                  {error && (
-                    <p className="text-sm text-destructive font-body mb-3">
-                      {error}
-                    </p>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {!confirming ? (
-              <Button
-                variant="outline"
-                onClick={() =>
-                  setConfirming(
-                    true
-                  )
-                }
-                className="w-full border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
-              >
-                Konto löschen
-              </Button>
-            ) : (
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    setConfirming(
-                      false
-                    )
-                  }
-                  disabled={
-                    deleting
-                  }
-                  className="flex-1"
-                >
-                  Abbrechen
-                </Button>
-
-                <Button
-                  onClick={
-                    handleDeleteAccount
-                  }
-                  disabled={
-                    deleting
-                  }
-                  className="flex-1 bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                >
-                  {deleting
-                    ? "Wird gelöscht…"
-                    : "Endgültig löschen"}
-                </Button>
-              </div>
-            )}
-          </div>
         </motion.div>
       </div>
     </PullToRefresh>

@@ -13,8 +13,6 @@
     "build:privacy": "node scripts/build-privacy-html.mjs"
   },
   "dependencies": {
-    "@base44/sdk": "^0.8.43",
-    "@base44/vite-plugin": "^1.0.30",
     "@capacitor/core": "^8.5.0",
     "@fontsource/outfit": "^5.3.0",
     "@fontsource/space-grotesk": "^5.3.0",

@@ -3,7 +3,6 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { HashRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
-import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { LanguageProvider } from '@/lib/LanguageContext';
 import { PremiumProvider, usePremium } from '@/lib/PremiumContext';
 import { LocalTrialProvider, useLocalTrial, useLocalTrialUsage } from '@/lib/LocalTrialContext';
@@ -12,7 +11,6 @@ import { PARTY_MODE_PURCHASES } from '@/lib/products';
 import { Capacitor } from '@capacitor/core';
 import { TabHistoryProvider } from '@/lib/TabHistoryContext';
 import { GameResultsProvider } from '@/lib/GameResultsContext';
-import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { lazy, Suspense, Component } from "react";
 import TransitionLayout from '@/components/TransitionLayout';
 
@@ -203,35 +201,8 @@ function ClassicModeRoute({ children }) {
   return <Navigate to="/setup" replace />;
 }
 
-const AuthenticatedApp = () => {
-  const {
-    isLoadingAuth,
-    isLoadingPublicSettings,
-    authError,
-    navigateToLogin,
-  } = useAuth();
-
-  // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
-    }
-  }
-
-  // Render the main app
+// Lumaga hat keine Anmeldung: Die Routen werden direkt angezeigt.
+const AppRoutes = () => {
   return (
     <Suspense fallback={<SuspenseFallback />}>
       <Routes>
@@ -354,19 +325,17 @@ function App() {
       <PremiumProvider>
         <LocalTrialProvider>
           <LocalPlayerSessionProvider>
-            <AuthProvider>
             <QueryClientProvider client={queryClientInstance}>
               <Router>
                 <TabHistoryProvider>
                   <GameResultsProvider>
-                    <AuthenticatedApp />
+                    <AppRoutes />
                   </GameResultsProvider>
                 </TabHistoryProvider>
               </Router>
 
-                <Toaster />
-             </QueryClientProvider>
-            </AuthProvider>
+              <Toaster />
+            </QueryClientProvider>
           </LocalPlayerSessionProvider>
         </LocalTrialProvider>
       </PremiumProvider>
