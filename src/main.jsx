@@ -48,6 +48,16 @@ async function startApp() {
 
 startApp();
 
+// Service Worker: macht Lumaga auf dem Handy installierbar
+// (Startbildschirm) und erlaubt das Öffnen ohne Verbindung.
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch((error) => {
+      console.warn("Service Worker konnte nicht registriert werden:", error);
+    });
+  });
+}
+
 async function initRevenueCat() {
   const platform = Capacitor.getPlatform();
 
