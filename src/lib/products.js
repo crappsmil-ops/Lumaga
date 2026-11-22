@@ -132,8 +132,12 @@ export const PRODUCTS = {
 
   // Vorhandene Zusatzprodukte bleiben erhalten.
   // Für Lumaga Web sind sie noch nicht eingerichtet.
+  // Freiwillige Unterstützung („Eine Kugel Eis spendieren“), Verbrauchsartikel
+  // ohne Entitlement. In RevenueCat: Produkt lumaga_eis_spendieren,
+  // Paket eis_spendieren im Offering default.
   BEER_TIP: {
-    id: "trinkluma_getraenk_spendieren",
+    id: "lumaga_eis_spendieren",
+    packageId: "eis_spendieren",
     price: "1,49 €",
     priceEn: "1.49 €",
   },

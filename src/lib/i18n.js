@@ -116,7 +116,7 @@ export const translations = {
     beer_title: "Dem Entwickler ein Getränk ausgeben 🥂",
     beer_desc: "Spendiere dem Entwickler ein Getränk als Dankeschön!",
     beer_button: "Getränk spendieren",
-    beer_success: "Prost! 🥂 Danke für das Getränk!",
+    beer_success: "Danke für das Eis! 🍦 Du bist großartig!",
     beer_cancelled: "Vielleicht ein andermal 🥂",
 
     // Wild
@@ -448,7 +448,7 @@ export const translations = {
     beer_title: "Buy the developer a drink 🥂",
     beer_desc: "Buy the developer a drink as a thank you!",
     beer_button: "Buy a drink",
-    beer_success: "Cheers! 🥂 Thanks for the drink!",
+    beer_success: "Thanks for the ice cream! 🍦 You are awesome!",
     beer_cancelled: "Maybe another time 🥂",
 
     // Wild

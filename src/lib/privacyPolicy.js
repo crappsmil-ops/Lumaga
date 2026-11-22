@@ -4,39 +4,11 @@
 
 export const PRIVACY_POLICY = {
   "title": "Datenschutzerklärung – Lumaga",
-  "stand": "21. November 2026",
+  "stand": "22. November 2026",
   "blocks": [
     {
       "type": "h2",
-      "text": "1. Verantwortlicher"
-    },
-    {
-      "type": "p",
-      "text": "Verantwortlich für die Datenverarbeitung im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:"
-    },
-    {
-      "type": "p",
-      "text": "Christian Raab"
-    },
-    {
-      "type": "p",
-      "text": "Tulpenweg 9"
-    },
-    {
-      "type": "p",
-      "text": "63579 Freigericht"
-    },
-    {
-      "type": "p",
-      "text": "Deutschland"
-    },
-    {
-      "type": "p",
-      "text": "E-Mail: crappsmil@gmail.com"
-    },
-    {
-      "type": "h2",
-      "text": "2. Allgemeine Hinweise zur Datenverarbeitung"
+      "text": "1. Allgemeine Hinweise zur Datenverarbeitung"
     },
     {
       "type": "p",
@@ -48,7 +20,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Die Webversion wird über Vercel bereitgestellt. Die Webapp setzt keine Analyse-, Werbe- oder Tracking-Dienste ein. Die Schriftarten werden zusammen mit der Webapp über Vercel ausgeliefert; es werden keine Schriftarten von Servern Dritter geladen. Für die Webversion werden serverseitige Kaufprüfungen über Vercel-Funktionen bereitgestellt. Für die freiwillige Wiederherstellung von Käufen per Wiederherstellungscode wird die Datenbank Upstash Redis eingesetzt (siehe Abschnitt 5). Für das Support- und Feedbackfenster wird zusätzlich Cloudflare Workers als technischer Endpunkt eingesetzt; der Versand der Supportnachricht erfolgt anschließend über den E-Mail-Versanddienst Resend."
+      "text": "Die Webversion wird über Vercel bereitgestellt. Die Webapp setzt keine Analyse-, Werbe- oder Tracking-Dienste ein. Die Schriftarten werden zusammen mit der Webapp über Vercel ausgeliefert; es werden keine Schriftarten von Servern Dritter geladen. Für die Webversion werden serverseitige Kaufprüfungen über Vercel-Funktionen bereitgestellt. Für die freiwillige Wiederherstellung von Käufen per Wiederherstellungscode wird die Datenbank Upstash Redis eingesetzt (siehe Abschnitt 4). Für das Support- und Feedbackfenster wird zusätzlich Cloudflare Workers als technischer Endpunkt eingesetzt; der Versand der Supportnachricht erfolgt anschließend über den E-Mail-Versanddienst Resend."
     },
     {
       "type": "p",
@@ -68,7 +40,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "3. Verarbeitung und Speicherung von Daten"
+      "text": "2. Verarbeitung und Speicherung von Daten"
     },
     {
       "type": "p",
@@ -97,11 +69,11 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Welche technischen Daten bei der Nutzung anfallen und wofür sie verwendet werden, ist in Abschnitt 8 beschrieben."
+      "text": "Welche technischen Daten bei der Nutzung anfallen und wofür sie verwendet werden, ist in Abschnitt 7 beschrieben."
     },
     {
       "type": "h2",
-      "text": "4. Käufe in der Webapp"
+      "text": "3. Käufe in der Webapp"
     },
     {
       "type": "p",
@@ -120,7 +92,6 @@ export const PRIVACY_POLICY = {
         "die dauerhafte Freischaltung der lokalen Modi “Wer würde…?”, „Wer kennt wen?“, „Bluff & Wahrheit“, „Pantomime“ und „Ich habe noch nie“,",
         "die dauerhafte Freischaltung eines lokalen Bundles, das mehrere lokale Premium-Inhalte zusammenfasst,",
         "ein zeitlich begrenzter 24h-Party-Pass für die Freischaltung der Premium-Modi und für bis zu acht lokale Spieler,",
-        "kostenpflichtige Einzelaktionen innerhalb eines Spielmodus, beispielsweise das kostenpflichtige Überspringen einer Frage oder Aktion,",
         "eine freiwillige Unterstützung des Entwicklers („Eis spendieren“)."
       ]
     },
@@ -130,7 +101,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Hierbei kann eine technische Nutzerkennung der App als sogenannte „App User ID“ an RevenueCat übermittelt werden, damit Käufe und Freischaltungen dem richtigen Nutzer zugeordnet werden können. In der Webapp ist das eine zufällig erzeugte, pseudonyme Kennung (siehe Abschnitt 7.1)."
+      "text": "Hierbei kann eine technische Nutzerkennung der App als sogenannte „App User ID“ an RevenueCat übermittelt werden, damit Käufe und Freischaltungen dem richtigen Nutzer zugeordnet werden können. In der Webapp ist das eine zufällig erzeugte, pseudonyme Kennung (siehe Abschnitt 6.1)."
     },
     {
       "type": "p",
@@ -161,7 +132,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Auch bei dauerhaften Freischaltungen wird der Kaufstatus über Vercel Server Functions bei RevenueCat geprüft. Die Zuordnung erfolgt über ein eigenes technisch notwendiges Cookie (siehe Abschnitt 7.1)."
+      "text": "Auch bei dauerhaften Freischaltungen wird der Kaufstatus über Vercel Server Functions bei RevenueCat geprüft. Die Zuordnung erfolgt über ein eigenes technisch notwendiges Cookie (siehe Abschnitt 6.1)."
     },
     {
       "type": "p",
@@ -191,7 +162,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "5. Wiederherstellung von Käufen per Wiederherstellungscode"
+      "text": "4. Wiederherstellung von Käufen per Wiederherstellungscode"
     },
     {
       "type": "p",
@@ -228,11 +199,11 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Die Wiederherstellungsdaten werden gespeichert, solange die erworbenen dauerhaften Freischaltungen genutzt werden können. Auf Anfrage werden sie gelöscht (siehe Abschnitt 14); eine Wiederherstellung ist danach nicht mehr möglich."
+      "text": "Die Wiederherstellungsdaten werden gespeichert, solange die erworbenen dauerhaften Freischaltungen genutzt werden können. Auf Anfrage werden sie gelöscht (siehe Abschnitt 13); eine Wiederherstellung ist danach nicht mehr möglich."
     },
     {
       "type": "h2",
-      "text": "6. Funktion „Mein Deck“"
+      "text": "5. Funktion „Mein Deck“"
     },
     {
       "type": "p",
@@ -277,7 +248,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "7. Lokal gespeicherte Spiel- und Einstellungsdaten"
+      "text": "6. Lokal gespeicherte Spiel- und Einstellungsdaten"
     },
     {
       "type": "p",
@@ -297,7 +268,7 @@ export const PRIVACY_POLICY = {
         "lokale Sitzungs- und Spielfortschrittsdaten der Modi “Wer würde…?”, „Wer kennt wen?“, „Bluff & Wahrheit“, „Pantomime“ und „Ich habe noch nie“, einschließlich lokal geführter Punktestände und Rundeninformationen,",
         "eine lokale Fragen-, Aufgaben- beziehungsweise Kartenhistorie, um unmittelbare Wiederholungen zu vermeiden,",
         "lokal gespeicherte Inhalte aus „Mein Deck“,",
-        "der Wiederherstellungscode (siehe Abschnitt 5) und die pseudonyme RevenueCat-Kennung (siehe Abschnitt 7.1),",
+        "der Wiederherstellungscode (siehe Abschnitt 4) und die pseudonyme RevenueCat-Kennung (siehe Abschnitt 6.1),",
         "weitere technische Einstellungen, die für die Nutzung der App erforderlich sind."
       ]
     },
@@ -331,7 +302,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h3",
-      "text": "7.1 Anonyme Sitzungskennungen und technisch notwendige Cookies"
+      "text": "6.1 Anonyme Sitzungskennungen und technisch notwendige Cookies"
     },
     {
       "type": "p",
@@ -343,7 +314,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Die Kennung dient der Zuordnung und sicheren Prüfung der Party-Pass-Kaufberechtigung in einem Browserprofil. Für dauerhafte Einzelkäufe verwendet Lumaga derzeit zusätzlich eine lokal gespeicherte RevenueCat-App-User-ID („lumaga_revenuecat_user_id“). Diese Kennung ist browserprofilabhängig; in einem anderen Browser lassen sich Käufe über den Wiederherstellungscode übernehmen (siehe Abschnitt 5). Der 24h-Party-Pass wird technisch über die gesonderte signierte Browsersitzung geprüft."
+      "text": "Die Kennung dient der Zuordnung und sicheren Prüfung der Party-Pass-Kaufberechtigung in einem Browserprofil. Für dauerhafte Einzelkäufe verwendet Lumaga derzeit zusätzlich eine lokal gespeicherte RevenueCat-App-User-ID („lumaga_revenuecat_user_id“). Diese Kennung ist browserprofilabhängig; in einem anderen Browser lassen sich Käufe über den Wiederherstellungscode übernehmen (siehe Abschnitt 4). Der 24h-Party-Pass wird technisch über die gesonderte signierte Browsersitzung geprüft."
     },
     {
       "type": "p",
@@ -351,7 +322,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "8. Technisch notwendige Daten"
+      "text": "7. Technisch notwendige Daten"
     },
     {
       "type": "p",
@@ -401,7 +372,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "9. Hosting durch Vercel"
+      "text": "8. Hosting durch Vercel"
     },
     {
       "type": "p",
@@ -413,7 +384,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Supportanfragen, die innerhalb des in der App bereitgestellten Support- und Feedbackfensters möglich sind, werden über Cloudflare Workers und Resend verarbeitet; Einzelheiten hierzu ergeben sich aus Abschnitt 10 und Abschnitt 18."
+      "text": "Supportanfragen, die innerhalb des in der App bereitgestellten Support- und Feedbackfensters möglich sind, werden über Cloudflare Workers und Resend verarbeitet; Einzelheiten hierzu ergeben sich aus Abschnitt 9 und Abschnitt 17."
     },
     {
       "type": "p",
@@ -437,7 +408,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "10. Weitere Drittanbieter (RevenueCat, Stripe, Upstash, Cloudflare, Resend, Google)"
+      "text": "9. Weitere Drittanbieter (RevenueCat, Stripe, Upstash, Cloudflare, Resend, Google)"
     },
     {
       "type": "p",
@@ -465,7 +436,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Upstash, Inc. stellt die Datenbank Upstash Redis bereit, die über Vercel eingebunden ist (Primärregion Frankfurt, Deutschland). Sie wird ausschließlich für die Kauf-Wiederherstellung genutzt; Einzelheiten stehen in Abschnitt 5."
+      "text": "Upstash, Inc. stellt die Datenbank Upstash Redis bereit, die über Vercel eingebunden ist (Primärregion Frankfurt, Deutschland). Sie wird ausschließlich für die Kauf-Wiederherstellung genutzt; Einzelheiten stehen in Abschnitt 4."
     },
     {
       "type": "p",
@@ -489,7 +460,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "11. Weitergabe und Übermittlung personenbezogener Daten"
+      "text": "10. Weitergabe und Übermittlung personenbezogener Daten"
     },
     {
       "type": "p",
@@ -524,7 +495,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "12. Speicherdauer"
+      "text": "11. Speicherdauer"
     },
     {
       "type": "p",
@@ -564,7 +535,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Die Speicherdauer ist in Abschnitt 5 beschrieben. Die Zähler zur Begrenzung von Einlöseversuchen werden nach 15 Minuten automatisch gelöscht."
+      "text": "Die Speicherdauer ist in Abschnitt 4 beschrieben. Die Zähler zur Begrenzung von Einlöseversuchen werden nach 15 Minuten automatisch gelöscht."
     },
     {
       "type": "p",
@@ -588,7 +559,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "13. Rechte der Nutzer"
+      "text": "12. Rechte der Nutzer"
     },
     {
       "type": "p",
@@ -623,7 +594,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "14. Löschung personenbezogener Daten"
+      "text": "13. Löschung personenbezogener Daten"
     },
     {
       "type": "p",
@@ -635,7 +606,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "p",
-      "text": "Sollte ein Nutzer darüber hinaus Auskunft über personenbezogene Daten oder deren Löschung verlangen wollen, kann er sich über die in Abschnitt 19 genannten Kontaktdaten an den Betreiber wenden."
+      "text": "Sollte ein Nutzer darüber hinaus Auskunft über personenbezogene Daten oder deren Löschung verlangen wollen, kann er sich über die in Abschnitt 18 genannten Kontaktdaten an den Betreiber wenden."
     },
     {
       "type": "p",
@@ -647,7 +618,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "15. Widerruf von Einwilligungen und Widerspruch"
+      "text": "14. Widerruf von Einwilligungen und Widerspruch"
     },
     {
       "type": "p",
@@ -674,7 +645,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "16. Datensicherheit"
+      "text": "15. Datensicherheit"
     },
     {
       "type": "p",
@@ -712,7 +683,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "17. Änderungen dieser Datenschutzerklärung"
+      "text": "16. Änderungen dieser Datenschutzerklärung"
     },
     {
       "type": "p",
@@ -738,7 +709,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h3",
-      "text": "17.1 Externe Links und Käufe im Browser"
+      "text": "16.1 Externe Links und Käufe im Browser"
     },
     {
       "type": "p",
@@ -750,7 +721,7 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "18. Support- und Feedbackanfragen"
+      "text": "17. Support- und Feedbackanfragen"
     },
     {
       "type": "p",
@@ -848,11 +819,11 @@ export const PRIVACY_POLICY = {
     },
     {
       "type": "h2",
-      "text": "19. Kontakt"
+      "text": "18. Verantwortlicher und Kontakt"
     },
     {
       "type": "p",
-      "text": "Bei Fragen zum Datenschutz, zur Verarbeitung personenbezogener Daten oder zur Ausübung der vorgenannten Rechte können sich Nutzer an den Verantwortlichen wenden:"
+      "text": "Verantwortlich für die Datenverarbeitung im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:"
     },
     {
       "type": "p",
@@ -873,6 +844,47 @@ export const PRIVACY_POLICY = {
     {
       "type": "p",
       "text": "E-Mail: crappsmil@gmail.com"
+    },
+    {
+      "type": "p",
+      "text": "Bei Fragen zum Datenschutz, zur Verarbeitung personenbezogener Daten oder zur Ausübung der vorgenannten Rechte können sich Nutzer jederzeit an den Verantwortlichen wenden."
+    },
+    {
+      "type": "h2",
+      "id": "impressum",
+      "text": "Impressum"
+    },
+    {
+      "type": "p",
+      "text": "Angaben gemäß § 5 DDG:"
+    },
+    {
+      "type": "p",
+      "text": "Christian Raab"
+    },
+    {
+      "type": "p",
+      "text": "Tulpenweg 9"
+    },
+    {
+      "type": "p",
+      "text": "63579 Freigericht"
+    },
+    {
+      "type": "p",
+      "text": "Deutschland"
+    },
+    {
+      "type": "p",
+      "text": "E-Mail: crappsmil@gmail.com"
+    },
+    {
+      "type": "p",
+      "text": "Verantwortlich für den Inhalt: Christian Raab (Anschrift wie oben)."
+    },
+    {
+      "type": "p",
+      "text": "Haftungsausschluss: Die Inhalte dieser App wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann keine Gewähr übernommen werden. Die App richtet sich ausschließlich an Personen, die mindestens 16 Jahre alt sind."
     }
   ]
 };

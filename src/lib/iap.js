@@ -512,9 +512,13 @@ export async function purchaseProduct(
       const required =
         packageEntitlements[productOrPackageId] || [];
 
+      // Freiwillige Unterstützung schaltet nichts frei: abgeschlossener Kauf genügt.
+      const isTip = productOrPackageId === "eis_spendieren";
+
       const verified =
-        required.length > 0 &&
-        required.every((id) => Boolean(active[id]));
+        isTip ||
+        (required.length > 0 &&
+          required.every((id) => Boolean(active[id])));
 
       return {
         ok: verified,

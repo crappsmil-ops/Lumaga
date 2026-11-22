@@ -9,7 +9,8 @@ export function getTabForPath(path) {
     path.startsWith("/settings") ||
     path.startsWith("/support") ||
     path.startsWith("/ueber-die-app") ||
-    path.startsWith("/datenschutz")
+    path.startsWith("/datenschutz") ||
+    path.startsWith("/impressum")
   ) {
     return "/settings";
   }

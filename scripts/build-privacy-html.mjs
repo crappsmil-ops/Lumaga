@@ -47,7 +47,9 @@ function linked(text) {
 function renderBlock(block) {
   switch (block.type) {
     case "h2":
-      return `<h2>${escapeHtml(block.text)}</h2>`;
+      return block.id
+        ? `<h2 id="${escapeHtml(block.id)}">${escapeHtml(block.text)}</h2>`
+        : `<h2>${escapeHtml(block.text)}</h2>`;
     case "h3":
       return `<h3>${escapeHtml(block.text)}</h3>`;
     case "ul":

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import BackButton from "@/components/BackButton";
 import { PRIVACY_POLICY } from "@/lib/privacyPolicy";
 
@@ -34,7 +35,10 @@ function Block({ block }) {
   switch (block.type) {
     case "h2":
       return (
-        <h2 className="text-lg font-heading font-black pt-6 first:pt-0 leading-snug">
+        <h2
+          id={block.id}
+          className="text-lg font-heading font-black pt-6 first:pt-0 leading-snug scroll-mt-6"
+        >
           {block.text}
         </h2>
       );
@@ -63,14 +67,23 @@ function Block({ block }) {
   }
 }
 
-export default function Datenschutz() {
+// Mit scrollTo="impressum" (Route /impressum) springt die Seite direkt zum Impressum.
+export default function Datenschutz({ scrollTo }) {
+  useEffect(() => {
+    if (!scrollTo) return undefined;
+    const timer = setTimeout(() => {
+      document.getElementById(scrollTo)?.scrollIntoView({ block: "start" });
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [scrollTo]);
+
   return (
     <div className="min-h-screen bg-background flex flex-col p-6 pt-safe relative">
       <BackButton />
 
       <div className="max-w-md w-full mx-auto pt-14 pb-12">
         <h1 className="text-3xl font-heading font-black mb-1">
-          Datenschutzerklärung
+          Datenschutzerklärung &amp; Impressum
         </h1>
         <p className="text-muted-foreground font-body text-sm mb-6">
           Stand: {PRIVACY_POLICY.stand}

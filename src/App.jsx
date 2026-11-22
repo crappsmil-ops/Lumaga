@@ -310,6 +310,11 @@ const AppRoutes = () => {
           />
 
           <Route
+            path="/impressum"
+            element={<Datenschutz scrollTo="impressum" />}
+          />
+
+          <Route
             path="*"
             element={<PageNotFound />}
           />

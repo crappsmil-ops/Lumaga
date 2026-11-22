@@ -11,6 +11,7 @@ import { purchaseProduct } from "@/lib/iap";
 import { PRODUCTS } from "@/lib/products";
 import { t } from "@/lib/i18n";
 
+const BEER_PACKAGE_ID = PRODUCTS.BEER_TIP.packageId;
 const BEER_PRODUCT_ID = PRODUCTS.BEER_TIP.id;
 
 export default function Results() {
@@ -35,9 +36,15 @@ export default function Results() {
   const handleBeerTip = async () => {
     setBuyingBeer(true);
     try {
-      const res = await purchaseProduct(BEER_PRODUCT_ID);
+      const res = await purchaseProduct(BEER_PACKAGE_ID, BEER_PRODUCT_ID);
       if (res.ok && res.purchased) {
         alert(t(lang, "beer_success"));
+      } else if (res.reason === "failed") {
+        alert(
+          isGerman
+            ? "Das Eis kann gerade nicht spendiert werden. Bitte versuche es später erneut."
+            : "The ice cream can't be bought right now. Please try again later."
+        );
       }
     } finally {
       setBuyingBeer(false);

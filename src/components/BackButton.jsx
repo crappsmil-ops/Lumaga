@@ -18,7 +18,8 @@ function getParentPath(pathname) {
   if (
     pathname.startsWith("/support") ||
     pathname.startsWith("/ueber-die-app") ||
-    pathname.startsWith("/datenschutz")
+    pathname.startsWith("/datenschutz") ||
+    pathname.startsWith("/impressum")
   ) {
     return "/settings";
   }
