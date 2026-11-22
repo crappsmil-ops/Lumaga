@@ -59,6 +59,8 @@ import { useLocalTrial, formatLocalTrialTime, LOCAL_TRIAL_MINUTES } from "@/lib/
 import { useLanguage } from "@/lib/LanguageContext";
 
 import { t } from "@/lib/i18n";
+import { WithdrawalConsentCheckbox } from "@/components/WithdrawalConsent";
+import { requestPurchaseConsent } from "@/lib/purchaseConsent";
 
 
 
@@ -258,6 +260,10 @@ const isWebStore = platform === "web";
   const [purchasing, setPurchasing] = useState(false);
 
   const [showPartyPassPaywall, setShowPartyPassPaywall] = useState(false);
+  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
+  useEffect(() => {
+    setWithdrawalConsent(false);
+  }, [showPartyPaywall, showPartyPassPaywall]);
   const [partyPassPrice, setPartyPassPrice] = useState(null);
   const [partyPassPriceError, setPartyPassPriceError] = useState("");
   const [partyPassPriceRetry, setPartyPassPriceRetry] = useState(0);
@@ -692,7 +698,9 @@ if (
 
         partyPurchase.packageId,
 
-        partyPurchase.productId
+        partyPurchase.productId,
+
+        { consented: true }
 
       );
 
@@ -861,6 +869,10 @@ if (
       return;
     }
 
+    if (!(await requestPurchaseConsent("lumaga_party_pass_24h"))) {
+      return;
+    }
+
     setPurchasing(true);
     setPartyPassPurchaseMessage("");
     try {
@@ -896,7 +908,9 @@ if (
 
     try {
       const result = await purchaseProduct(
-        PRODUCTS.PARTY_PASS.id
+        PRODUCTS.PARTY_PASS.id,
+        null,
+        { consented: true }
       );
 
       if (result.ok && result.purchased) {
@@ -1551,10 +1565,16 @@ const checking =
   </p>
 ) : null}
 
+<WithdrawalConsentCheckbox
+  checked={withdrawalConsent}
+  onChange={setWithdrawalConsent}
+  disabled={purchasing}
+/>
+
 <Button
   className="w-full"
   onClick={handlePartyPurchase}
-  disabled={purchasing || !availablePartyPrice}
+  disabled={purchasing || !availablePartyPrice || !withdrawalConsent}
 >
   {purchasing
     ? lang === "en"
@@ -1688,10 +1708,17 @@ const checking =
               </div>
             )}
 
+            <WithdrawalConsentCheckbox
+              checked={withdrawalConsent}
+              onChange={setWithdrawalConsent}
+              disabled={purchasing}
+            />
+
             <Button
               className="w-full"
               onClick={handlePartyPassPurchase}
               disabled={
+                !withdrawalConsent ||
                 purchasing ||
                 premiumStatusLoading ||
                 !isNativeStore ||

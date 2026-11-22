@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   motion,
   AnimatePresence,
@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/LanguageContext";
 import { t } from "@/lib/i18n";
+import { WithdrawalConsentCheckbox } from "@/components/WithdrawalConsent";
 
 export default function Paywall({
   open,
@@ -23,6 +24,11 @@ export default function Paywall({
   mode = "wild",
 }) {
   const { lang } = useLanguage();
+  const [consent, setConsent] = useState(false);
+
+  useEffect(() => {
+    if (!open) setConsent(false);
+  }, [open]);
 
   const content =
     mode === "hardcore"
@@ -138,9 +144,16 @@ export default function Paywall({
               )}
             </div>
 
+            <WithdrawalConsentCheckbox
+              checked={consent}
+              onChange={setConsent}
+              disabled={purchasing}
+              className="mb-4"
+            />
+
             <Button
               onClick={onPurchase}
-              disabled={purchasing}
+              disabled={purchasing || !consent}
               className="w-full h-14 text-base font-heading font-bold rounded-2xl bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity shadow-lg shadow-primary/20 mb-3"
             >
               {purchasing ? (

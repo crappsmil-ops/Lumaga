@@ -6,6 +6,7 @@ import {
 } from "@revenuecat/purchases-capacitor";
 import { getRevenueCatWeb } from "@/lib/revenueCatWeb";
 import { getLumagaCustomerId } from "@/lib/revenueCatIdentity";
+import { requestPurchaseConsent, recordPurchaseConsent } from "@/lib/purchaseConsent";
 
 
 const WEB_PARTY_PASS_ID = "lumaga_party_pass_24h";
@@ -456,8 +457,27 @@ async function purchaseOneTimeProduct(
 
 export async function purchaseProduct(
   productOrPackageId,
-  expectedStoreProductId = null
+  expectedStoreProductId = null,
+  { consented = false } = {}
 ) {
+  // Widerrufs-Zustimmung (§ 356 Abs. 5 BGB) vor jedem Kauf, außer der freiwilligen Eis-Spende.
+  const isTipPurchase =
+    productOrPackageId === "eis_spendieren" ||
+    productOrPackageId === "lumaga_eis_spendieren";
+
+  if (!isTipPurchase) {
+    if (consented) {
+      recordPurchaseConsent(productOrPackageId);
+    } else if (!(await requestPurchaseConsent(productOrPackageId))) {
+      return {
+        ok: false,
+        purchased: false,
+        reason: "cancelled",
+        message: null,
+      };
+    }
+  }
+
   if (Capacitor.getPlatform() === "web") {
     try {
       if (

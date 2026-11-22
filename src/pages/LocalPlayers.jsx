@@ -463,7 +463,7 @@ export default function LocalPlayers() {
 
       const packageId = targetPackageId();
 
-      const result = await purchaseProduct(packageId);
+      const result = await purchaseProduct(packageId, null, { consented: true });
 
 
 

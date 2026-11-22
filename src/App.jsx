@@ -13,6 +13,7 @@ import { TabHistoryProvider } from '@/lib/TabHistoryContext';
 import { GameResultsProvider } from '@/lib/GameResultsContext';
 import { lazy, Suspense, Component } from "react";
 import TransitionLayout from '@/components/TransitionLayout';
+import { PurchaseConsentHost } from '@/components/WithdrawalConsent';
 
 const Home = lazy(() => import("@/pages/Home"));
 const Setup = lazy(() => import("@/pages/Setup"));
@@ -339,6 +340,7 @@ function App() {
                 </TabHistoryProvider>
               </Router>
 
+              <PurchaseConsentHost />
               <Toaster />
             </QueryClientProvider>
           </LocalPlayerSessionProvider>
