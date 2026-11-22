@@ -589,8 +589,8 @@ const hasRequiredWkwOptions = () =>
     );
 
     const title = deck?.name
-      ? `Trinkluma – ${deck.name}`
-      : "Trinkluma – Mein Deck";
+      ? `Lumaga – ${deck.name}`
+      : "Lumaga – Mein Deck";
 
     if (navigator.share) {
       try {
