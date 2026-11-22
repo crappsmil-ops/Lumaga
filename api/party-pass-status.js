@@ -2,6 +2,13 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const MAX_PAGES = 20;
 
+// Welche RevenueCat-Käufe zählen: "sandbox" (Testkäufe) oder "production"
+// (echte Zahlungen). Ohne Angabe bleibt es beim bisherigen Testmodus.
+const PURCHASE_ENVIRONMENT =
+  process.env.REVENUECAT_ENVIRONMENT === "production"
+    ? "production"
+    : "sandbox";
+
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
@@ -75,7 +82,7 @@ if (
     for (let page = 0; page < MAX_PAGES; page++) {
       const url = new URL(baseUrl);
       url.searchParams.set("limit", "100");
-      url.searchParams.set("environment", "sandbox");
+      url.searchParams.set("environment", PURCHASE_ENVIRONMENT);
 
       if (cursor) {
         url.searchParams.set("starting_after", cursor);
