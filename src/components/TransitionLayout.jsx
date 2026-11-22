@@ -1,13 +1,12 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import BottomTabBar from "@/components/BottomTabBar";
 import { subscribeDisclaimer } from "@/lib/disclaimerState";
 
 const TAB_ROUTES = ["/", "/mydeck", "/settings"];
 
-// Subtle iOS-style push/pop slide distance (px). Kept small so screens look
-// identical before/after — only the transition changes.
+// Subtle iOS-style push/pop slide distance (px).
 const SLIDE = 16;
 
 export default function TransitionLayout() {
@@ -21,102 +20,47 @@ export default function TransitionLayout() {
   const showTabBar =
     TAB_ROUTES.includes(location.pathname) && !disclaimerActive;
 
-  // Detect navigation direction (push forward vs. pop back) using a local
-  // route stack so the slide animation can mirror iOS push/pop.
+  // Richtung (vor/zurück) für die Einblend-Animation bestimmen.
+  // Wird während des Renderns berechnet, damit die neue Seite sofort
+  // mit der passenden Richtung erscheint.
   const stackRef = useRef([location.pathname]);
-  const [direction, setDirection] = useState(1); // 1 = push, -1 = pop
+  const lastPathRef = useRef(location.pathname);
+  const directionRef = useRef(1);
 
-  useEffect(() => {
+  if (lastPathRef.current !== location.pathname) {
     const stack = stackRef.current;
-    const top = stack[stack.length - 1];
-
-    if (location.pathname === top) return;
-
-    const secondFromTop = stack[stack.length - 2];
-
-    if (location.pathname === secondFromTop) {
+    if (stack[stack.length - 2] === location.pathname) {
       stack.pop();
-      setDirection(-1);
+      directionRef.current = -1;
     } else {
       stack.push(location.pathname);
-      setDirection(1);
+      if (stack.length > 50) stack.shift();
+      directionRef.current = 1;
     }
+    lastPathRef.current = location.pathname;
+  }
+
+  // Nach Seitenwechsel nach oben scrollen.
+  useEffect(() => {
+    window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // Hardware back-button / popstate handling.
-  // React Router already maps popstate to in-app back navigation. This handler
-  // ensures the scroll position resets to top on back navigation (a common
-  // mobile issue) and, when the user lands on a tab root via back, pushes a
-  // single history buffer entry so one accidental back press does not exit the
-  // app immediately. The buffer is only pushed once per root visit, so the user
-  // can still exit with a second press.
-  useEffect(() => {
-    let buffered = false;
-
-    const pushBuffer = () => {
-      if (
-        !buffered &&
-        TAB_ROUTES.includes(window.location.pathname)
-      ) {
-        window.history.pushState(
-          { trinklumaBuffer: true },
-          "",
-          window.location.pathname
-        );
-        buffered = true;
-      }
-    };
-
-    pushBuffer();
-
-    const onPopState = () => {
-      // Reset scroll on any back/forward navigation
-      window.scrollTo(0, 0);
-
-      // Re-arm the buffer for the current root so a single back doesn't exit
-      buffered = false;
-      pushBuffer();
-    };
-
-    window.addEventListener("popstate", onPopState);
-
-    return () => {
-      window.removeEventListener("popstate", onPopState);
-    };
-  }, []);
-
+  // Nur Einblenden, kein Ausblenden: Die alte Seite verschwindet sofort.
+  // So kann keine laufende Animation Knöpfe blockieren oder hängen bleiben.
   return (
     <div className="flex flex-col min-h-screen">
-      <AnimatePresence mode="wait" custom={direction}>
-        <motion.div
-          key={location.pathname}
-          custom={direction}
-          variants={{
-            enter: (dir) => ({
-              opacity: 0,
-              x: dir > 0 ? SLIDE : -SLIDE,
-            }),
-            center: {
-              opacity: 1,
-              x: 0,
-            },
-            exit: (dir) => ({
-              opacity: 0,
-              x: dir > 0 ? -SLIDE : SLIDE,
-            }),
-          }}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{
-            duration: 0.12,
-            ease: [0.32, 0.72, 0, 1],
-          }}
-          className={`flex-1 ${showTabBar ? "pb-tabbar" : ""}`}
-        >
-          <Outlet />
-        </motion.div>
-      </AnimatePresence>
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, x: directionRef.current > 0 ? SLIDE : -SLIDE }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{
+          duration: 0.12,
+          ease: [0.32, 0.72, 0, 1],
+        }}
+        className={`flex-1 ${showTabBar ? "pb-tabbar" : ""}`}
+      >
+        <Outlet />
+      </motion.div>
 
       {showTabBar && <BottomTabBar />}
     </div>

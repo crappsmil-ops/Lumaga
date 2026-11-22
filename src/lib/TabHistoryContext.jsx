@@ -1,83 +1,37 @@
-import React, {
-  createContext,
-  useContext,
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { createContext, useCallback, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const TAB_ROOTS = ["/", "/mydeck", "/settings"];
 
 export function getTabForPath(path) {
-  if (path.startsWith("/lobby") || path.startsWith("/multiplayer")) return "/";
   if (path.startsWith("/mydeck")) return "/mydeck";
-  if (path.startsWith("/settings") || path.startsWith("/support"))
+  if (
+    path.startsWith("/settings") ||
+    path.startsWith("/support") ||
+    path.startsWith("/ueber-die-app") ||
+    path.startsWith("/datenschutz")
+  ) {
     return "/settings";
-
+  }
   return "/";
 }
 
 const TabHistoryContext = createContext(null);
 
+// Die untere Leiste führt immer zuverlässig zur Startseite des jeweiligen Tabs.
+// (Früher wurden Unterseiten pro Tab gemerkt – das führte zu falschen Zielen.)
 export function TabHistoryProvider({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
-
-  const stacksRef = useRef({
-    "/": ["/"],
-    "/mydeck": ["/mydeck"],
-    "/settings": ["/settings"],
-  });
-
-  const [currentTab, setCurrentTab] = useState(() =>
-    getTabForPath(location.pathname)
-  );
-
-  const lastPathRef = useRef(location.pathname);
-
-  useEffect(() => {
-    const tab = getTabForPath(location.pathname);
-    const stack = stacksRef.current[tab];
-    const top = stack[stack.length - 1];
-
-    if (location.pathname !== top) {
-      const prevTab = getTabForPath(lastPathRef.current);
-
-      if (tab === prevTab) {
-        const secondFromTop = stack[stack.length - 2];
-
-        if (secondFromTop === location.pathname) {
-          stack.pop();
-        } else {
-          stack.push(location.pathname);
-        }
-      } else if (top !== location.pathname) {
-        stack.push(location.pathname);
-      }
-    }
-
-    setCurrentTab(tab);
-    lastPathRef.current = location.pathname;
-  }, [location.pathname]);
+  const currentTab = getTabForPath(location.pathname);
 
   const switchTab = useCallback(
     (to) => {
-      if (to === currentTab) {
-        stacksRef.current[to] = [to];
-
-        if (location.pathname !== to) {
-          navigate(to);
-        }
-      } else {
-        const targetStack = stacksRef.current[to];
-        const top = targetStack[targetStack.length - 1] || to;
-
-        navigate(top);
+      if (location.pathname !== to) {
+        navigate(to);
       }
     },
-    [currentTab, location.pathname, navigate]
+    [location.pathname, navigate]
   );
 
   return (
