@@ -23,7 +23,11 @@ export function getVerifiedPremiumModes(products) {
 
   if (!Array.isArray(products)) return modes;
 
-  if (products.includes("lumaga_bundle_1099")) {
+  // Bundle: Test-Konfiguration "lumaga_bundle_1099", Live "lumaga_bundle".
+  if (
+    products.includes("lumaga_bundle_1099") ||
+    products.includes("lumaga_bundle")
+  ) {
     return Object.fromEntries(
       Object.keys(modes).map((mode) => [mode, true])
     );

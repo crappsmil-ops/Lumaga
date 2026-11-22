@@ -10,6 +10,20 @@ import { getLumagaCustomerId } from "@/lib/revenueCatIdentity";
 
 const WEB_PARTY_PASS_ID = "lumaga_party_pass_24h";
 
+// Gleichwertige Produkt-IDs: Das Bundle heißt in der Test-Konfiguration
+// "lumaga_bundle_1099", in der Live-Konfiguration "lumaga_bundle".
+const EQUIVALENT_PRODUCT_IDS = [
+  ["lumaga_bundle_1099", "lumaga_bundle"],
+];
+
+function isSameProduct(expectedId, actualId) {
+  if (expectedId === actualId) return true;
+
+  return EQUIVALENT_PRODUCT_IDS.some(
+    (group) => group.includes(expectedId) && group.includes(actualId)
+  );
+}
+
 async function getWebPackage(packageId, expectedProductId = null) {
   const offerings = await getRevenueCatWeb().getOfferings({
     currency: "EUR",
@@ -41,7 +55,7 @@ async function getWebPackage(packageId, expectedProductId = null) {
 
   if (
     expectedProductId &&
-    actualProductId !== expectedProductId
+    !isSameProduct(expectedProductId, actualProductId)
   ) {
     throw new Error(
       `Produkt stimmt nicht überein: erwartet ` +

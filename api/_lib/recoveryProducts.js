@@ -8,6 +8,8 @@
   lumaga_pantomime: "pantomime",
   lumaga_never: "never",
   lumaga_bundle_1099: "bundle",
+  // Live-Konfiguration verwendet "lumaga_bundle" für dasselbe Produkt.
+  lumaga_bundle: "bundle",
 });
 
 export function isRecoverableProduct(productId) {
