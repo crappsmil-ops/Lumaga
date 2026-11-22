@@ -97,16 +97,23 @@ test("Neuer Browser ohne Redis-Eintrag: authorized=true, recoveryManaged=false",
   const req = makeReq(sessionId);
   const res = makeRes();
 
+  let verifyCalled = false;
+
   await handlePurchaseAuthorization(req, res, {
     redis,
-    verifyPurchases: async () => ["lumaga_chaos"],
+    verifyPurchases: async () => {
+      verifyCalled = true;
+      return ["lumaga_chaos"];
+    },
     readSession: () => sessionId,
   });
 
   assert.equal(res.statusCode, 200);
   assert.equal(res.body.authorized, true);
   assert.equal(res.body.recoveryManaged, false, "Ohne Redis-Eigner kein Recovery-Managed-Status");
-  assert.deepEqual(res.body.products, ["lumaga_chaos"]);
+  // Nicht verwaltete Browser pruefen ihre Kaeufe selbst ueber das RevenueCat-SDK.
+  assert.deepEqual(res.body.products, []);
+  assert.equal(verifyCalled, false, "Ohne Recovery-Verwaltung keine Server-Kaufpruefung");
 });
 
 test("Fehlende Sitzung liefert 401", async () => {

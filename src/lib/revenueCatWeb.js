@@ -59,23 +59,18 @@ export async function checkLumagaPartyPass() {
   };
 }
 
-// Bisheriger Test-Link (RevenueCat-Sandbox, kein echtes Geld).
-// Wird nur genutzt, solange VITE_REVENUECAT_PARTY_PASS_CHECKOUT_URL
-// nicht gesetzt ist.
-const SANDBOX_PARTY_PASS_CHECKOUT =
-  "https://pay.rev.cat/sandbox/pvxxufauyosngefk/";
-
 export async function getLumagaPartyPassCheckoutUrl() {
-  const appUserId = await getLumagaPartySession();
-
   // Echter Kauf-Link aus dem RevenueCat-Dashboard (Web Purchase Link,
-  // Production), z. B. "https://pay.rev.cat/<token>/".
+  // Production), z. B. "https://pay.rev.cat/<token>/", gesetzt in Vercel.
   const configured =
     import.meta.env.VITE_REVENUECAT_PARTY_PASS_CHECKOUT_URL?.trim();
 
-  const base = configured
-    ? configured.replace(/\/?$/, "/")
-    : SANDBOX_PARTY_PASS_CHECKOUT;
+  if (!configured) {
+    throw new Error("Der Party-Pass-Kauf ist gerade nicht verfügbar.");
+  }
+
+  const appUserId = await getLumagaPartySession();
+  const base = configured.replace(/\/?$/, "/");
 
   return base + encodeURIComponent(appUserId);
 }

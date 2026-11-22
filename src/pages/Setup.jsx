@@ -856,7 +856,7 @@ if (
       : null;
   };
 
-  // Nur Sandbox: Die eigentliche Party-Pass-Box öffnet den Kauf-Link.
+  // Web: Die Party-Pass-Box öffnet den RevenueCat-Kauf-Link.
   // Die vorhandenen Einzelkäufe und der native Kaufdialog bleiben unverändert.
   const handleWebPartyPassCheckout = async () => {
     if (
@@ -882,12 +882,12 @@ if (
       const checkoutUrl = await getLumagaPartyPassCheckoutUrl();
       window.location.assign(checkoutUrl);
     } catch (error) {
-      console.error("Party-Pass-Sandbox-Checkout:", error);
+      console.error("Party-Pass-Checkout:", error);
       setPartyPassPurchaseMessage(
         error?.message ||
           (lang === "en"
-            ? "The test checkout could not be opened."
-            : "Der Testkauf konnte nicht geöffnet werden.")
+            ? "The checkout could not be opened."
+            : "Der Kauf konnte nicht geöffnet werden.")
       );
       setPurchasing(false);
     }
@@ -1218,8 +1218,8 @@ if (
                       ? (lang === "en" ? "Opening checkout…" : "Kauf wird geöffnet…")
                       : isWebStore
                         ? (lang === "en"
-                            ? "Test 24h Party Pass · €3.99"
-                            : "24h Party Pass testen · 3,99 €")
+                            ? "Buy 24h Party Pass · €3.99"
+                            : "24h Party Pass kaufen · 3,99 €")
                         : (lang === "en"
                             ? "24h Party Pass – coming soon"
                             : "24h Party Pass – in Vorbereitung")}
@@ -1227,8 +1227,8 @@ if (
                   {isWebStore && (
                     <p className="font-body text-xs text-muted-foreground mt-2">
                       {lang === "en"
-                        ? "Sandbox only · No real charge · No subscription"
-                        : "Nur Sandbox-Test · Keine echte Abbuchung · Kein Abo"}
+                        ? "One-time payment · No subscription · Ends automatically after 24 hours"
+                        : "Einmalzahlung · Kein Abo · Endet automatisch nach 24 Stunden"}
                     </p>
                   )}
                 </>
