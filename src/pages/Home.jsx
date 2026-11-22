@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Users, Settings, Layers, Share2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DisclaimerModal from "@/components/DisclaimerModal";
+import { InstallAppButton, IosInstallHint } from "@/components/InstallApp";
 import { useLanguage } from "@/lib/LanguageContext";
 import { t } from "@/lib/i18n";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -42,6 +43,7 @@ export default function Home() {
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 overflow-hidden relative">
         <DisclaimerModal />
+        <IosInstallHint lang={lang} />
 
         {/* Settings + Language toggle */}
         <div className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] right-6 flex items-center gap-2 z-10">
@@ -69,8 +71,9 @@ export default function Home() {
 
           <button
             onClick={async () => {
+              // Web-App: immer die Website teilen (es gibt keine Store-Version).
               const shareUrl =
-                detectStoreUrl();
+                window.location.origin;
 
               const shareData = {
                 title: "Lumaga",
@@ -201,6 +204,9 @@ export default function Home() {
                 )}
               </Button>
             </Link>
+
+            <InstallAppButton lang={lang} className="mt-3" />
+
           </motion.div>
         </motion.div>
       </div>

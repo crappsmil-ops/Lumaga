@@ -1,4 +1,6 @@
 import { prepareNewPurchaseIdentity } from "@/lib/purchaseIdentity";
+// Früh laden, damit das Installations-Angebot des Browsers nicht verpasst wird.
+import "@/lib/installPrompt";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "@/App.jsx";
