@@ -124,10 +124,18 @@ export default function Game() {
   } =
     useLanguage();
   const {
-    isHotPremium,
-    isHardcorePremium,
+    isHotPremium: isHotPurchased,
+    isHardcorePremium: isHardcorePurchased,
+    hasPartyPass,
   } =
     usePremium();
+
+  // Ein aktiver 24h-Party-Pass schaltet Wild und Chaos ebenso frei
+  // wie ein dauerhafter Kauf.
+  const isHotPremium =
+    isHotPurchased || Boolean(hasPartyPass);
+  const isHardcorePremium =
+    isHardcorePurchased || Boolean(hasPartyPass);
   const {
     trialAvailable,
   } =
