@@ -24,6 +24,7 @@ import {
   restorePurchases,
   isIAPAvailable,
   getPackagePrice,
+  resolveBundlePackageId,
 } from "@/lib/iap";
 import { PRODUCTS } from "@/lib/products";
 
@@ -43,7 +44,8 @@ import PullToRefresh from "@/components/PullToRefresh";
 import BackButton from "@/components/BackButton";
 import ModeInfoButton from "@/components/game/ModeInfoButton";
 
-// Paket-ID im RevenueCat-Offering "default" (Web).
+// Paket-ID im RevenueCat-Offering "default" (Web). Während des
+// Startangebots wird stattdessen "bundle_start" verkauft (siehe resolveBundlePackageId).
 const BUNDLE_PRODUCT_ID = PRODUCTS.BUNDLE.packageId;
 const BUNDLE_ENTITLEMENT_IDS = [
   "hot",
@@ -177,11 +179,15 @@ useEffect(() => {
 
   // Aktueller Bundle-Preis aus RevenueCat (z. B. Startangebot).
   const [bundlePrice, setBundlePrice] = useState(null);
+  const [bundlePackageId, setBundlePackageId] = useState(BUNDLE_PRODUCT_ID);
 
   useEffect(() => {
     let alive = true;
-    getPackagePrice(BUNDLE_PRODUCT_ID)
-      .then((res) => {
+    resolveBundlePackageId()
+      .then(async (packageId) => {
+        if (!alive) return;
+        setBundlePackageId(packageId);
+        const res = await getPackagePrice(packageId);
         if (alive && res?.ok) setBundlePrice(res.priceString);
       })
       .catch(() => {});
@@ -239,7 +245,7 @@ useEffect(() => {
       try {
         const res =
           await purchaseProduct(
-            BUNDLE_PRODUCT_ID
+            bundlePackageId
           );
 
         if (

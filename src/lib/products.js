@@ -123,6 +123,15 @@ export const PRODUCTS = {
     priceEn: "11.99 €",
   },
 
+  // Startangebot: Paket "bundle_start" (Produkt lumaga_bundle_start, 8,99 €).
+  // Wird bis zum Enddatum verkauft, sofern es im Offering vorhanden ist;
+  // danach automatisch wieder das normale Paket "bundle".
+  BUNDLE_START: {
+    id: "lumaga_bundle_start",
+    packageId: "bundle_start",
+    endsAt: "2026-12-14T00:00:00+01:00",
+  },
+
   PARTY_PASS: {
     id: "lumaga_party_pass_24h",
     packageId: "party_pass_24h",

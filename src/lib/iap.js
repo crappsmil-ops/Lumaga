@@ -7,6 +7,7 @@ import {
 import { getRevenueCatWeb } from "@/lib/revenueCatWeb";
 import { getLumagaCustomerId } from "@/lib/revenueCatIdentity";
 import { requestPurchaseConsent, recordPurchaseConsent } from "@/lib/purchaseConsent";
+import { PRODUCTS } from "@/lib/products";
 
 
 const WEB_PARTY_PASS_ID = "lumaga_party_pass_24h";
@@ -65,6 +66,27 @@ async function getWebPackage(packageId, expectedProductId = null) {
   }
 
   return selected;
+}
+
+// Liefert das aktuell zu verkaufende Bundle-Paket: bis zum Ende des
+// Startangebots "bundle_start" (falls im Offering vorhanden), sonst "bundle".
+export async function resolveBundlePackageId() {
+  const regular = PRODUCTS.BUNDLE.packageId;
+  const start = PRODUCTS.BUNDLE_START;
+
+  if (Capacitor.getPlatform() !== "web") return regular;
+  if (Date.now() >= new Date(start.endsAt).getTime()) return regular;
+
+  try {
+    const offerings = await getRevenueCatWeb().getOfferings({ currency: "EUR" });
+    const offering = offerings.current || offerings.all?.default;
+    const hasStart = offering?.availablePackages?.some(
+      (pkg) => pkg.identifier === start.packageId
+    );
+    return hasStart ? start.packageId : regular;
+  } catch {
+    return regular;
+  }
 }
 
 async function getWebCustomerInfo() {
@@ -517,6 +539,16 @@ export async function purchaseProduct(
         pantomime: ["pantomime"],
         never: ["never"],
         mein_deck: ["mein_deck"],
+        bundle_start: [
+          "hot",
+          "hardcore",
+          "wer_wuerde",
+          "wkw",
+          "bluff",
+          "pantomime",
+          "never",
+          "mein_deck",
+        ],
         bundle: [
           "hot",
           "hardcore",
