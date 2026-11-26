@@ -4,7 +4,7 @@
 
 export const PRIVACY_POLICY = {
   "title": "Datenschutzerklärung – Lumaga",
-  "stand": "22. November 2026",
+  "stand": "26. November 2026",
   "blocks": [
     {
       "type": "h2",
@@ -21,6 +21,10 @@ export const PRIVACY_POLICY = {
     {
       "type": "p",
       "text": "Die Webversion wird über Vercel bereitgestellt. Die Webapp setzt keine Analyse-, Werbe- oder Tracking-Dienste ein. Die Schriftarten werden zusammen mit der Webapp über Vercel ausgeliefert; es werden keine Schriftarten von Servern Dritter geladen. Für die Webversion werden serverseitige Kaufprüfungen über Vercel-Funktionen bereitgestellt. Für die freiwillige Wiederherstellung von Käufen per Wiederherstellungscode wird die Datenbank Upstash Redis eingesetzt (siehe Abschnitt 4). Für das Support- und Feedbackfenster wird zusätzlich Cloudflare Workers als technischer Endpunkt eingesetzt; der Versand der Supportnachricht erfolgt anschließend über den E-Mail-Versanddienst Resend."
+    },
+    {
+      "type": "p",
+      "text": "Lumaga kann als Web-App auf dem Startbildschirm eines Geräts installiert werden. Damit die App schneller lädt, werden dabei die Programmdateien der App (zum Beispiel Seiten, Bilder und Skripte) mithilfe eines sogenannten Service Workers im Speicher des Browsers zwischengespeichert. Dabei werden keine personenbezogenen Daten gespeichert oder an den Betreiber übermittelt. Die zwischengespeicherten Dateien können jederzeit durch Löschen der Browserdaten oder Deinstallieren der App entfernt werden. Diese Speicherung ist für die Bereitstellung der vom Nutzer gewünschten Funktion technisch erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG)."
     },
     {
       "type": "p",
