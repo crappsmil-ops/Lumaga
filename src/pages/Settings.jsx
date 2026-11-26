@@ -23,7 +23,9 @@ import {
   purchaseProduct,
   restorePurchases,
   isIAPAvailable,
+  getPackagePrice,
 } from "@/lib/iap";
+import { PRODUCTS } from "@/lib/products";
 
 import {
   useLanguage,
@@ -41,7 +43,8 @@ import PullToRefresh from "@/components/PullToRefresh";
 import BackButton from "@/components/BackButton";
 import ModeInfoButton from "@/components/game/ModeInfoButton";
 
-const BUNDLE_PRODUCT_ID = "local_bundle";
+// Paket-ID im RevenueCat-Offering "default" (Web).
+const BUNDLE_PRODUCT_ID = PRODUCTS.BUNDLE.packageId;
 const BUNDLE_ENTITLEMENT_IDS = [
   "hot",
   "hardcore",
@@ -171,6 +174,21 @@ useEffect(() => {
     bundleMsg,
     setBundleMsg,
   ] = useState("");
+
+  // Aktueller Bundle-Preis aus RevenueCat (z. B. Startangebot).
+  const [bundlePrice, setBundlePrice] = useState(null);
+
+  useEffect(() => {
+    let alive = true;
+    getPackagePrice(BUNDLE_PRODUCT_ID)
+      .then((res) => {
+        if (alive && res?.ok) setBundlePrice(res.priceString);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const [
     soundEnabled,
@@ -518,6 +536,7 @@ useEffect(() => {
                       {lang === "en"
                         ? "Unlock bundle"
                         : "Bundle freischalten"}
+                      {bundlePrice ? ` · ${bundlePrice}` : ""}
                     </>
                   )}
                 </Button>
