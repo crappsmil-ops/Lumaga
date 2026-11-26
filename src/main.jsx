@@ -20,6 +20,38 @@ import "@fontsource/space-grotesk/600.css";
 import "@fontsource/space-grotesk/700.css";
 import "@/index.css";
 
+// Nach einem Update gibt es die Seiten-Dateien der alten Version nicht mehr.
+// Wer Lumaga vorher geöffnet hatte, könnte dann keine Seite mehr wechseln
+// (Tabs/Zurück reagieren nicht). In diesem Fall einmal neu laden.
+const CHUNK_RELOAD_KEY = "lumaga_chunk_reload_at";
+
+function reloadAfterUpdate() {
+  try {
+    const last = Number(sessionStorage.getItem(CHUNK_RELOAD_KEY) || 0);
+    if (Date.now() - last < 10000) return false; // keine Neulade-Schleife
+    sessionStorage.setItem(CHUNK_RELOAD_KEY, String(Date.now()));
+  } catch {
+    // sessionStorage nicht verfügbar: trotzdem neu laden
+  }
+  window.location.reload();
+  return true;
+}
+
+window.addEventListener("vite:preloadError", (event) => {
+  if (reloadAfterUpdate()) event.preventDefault();
+});
+
+window.addEventListener("unhandledrejection", (event) => {
+  const message = String(event.reason?.message || event.reason || "");
+  if (
+    /dynamically imported module|Importing a module script failed|error loading dynamically imported module/i.test(
+      message
+    )
+  ) {
+    reloadAfterUpdate();
+  }
+});
+
 import { Capacitor } from "@capacitor/core";
 import {
   Purchases,
