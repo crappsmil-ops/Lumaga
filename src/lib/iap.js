@@ -89,6 +89,27 @@ export async function resolveBundlePackageId() {
   }
 }
 
+// Die RevenueCat-Kasse (purchases-js) kann nach einem Kauf Reste hinterlassen:
+// eine unsichtbare Vollbild-Ebene und eine Scroll-Sperre auf <html>/<body>.
+// Beides blockiert danach Klicks, z. B. auf die untere Tableiste.
+let webPurchaseInFlight = false;
+
+function cleanupRevenueCatOverlay() {
+  if (webPurchaseInFlight || typeof document === "undefined") return;
+  document
+    .querySelectorAll(".rcb-ui-root .rcb-ui-container")
+    .forEach((el) => el.remove());
+  for (const el of [document.documentElement, document.body]) {
+    el.style.removeProperty("overflow");
+    el.style.removeProperty("height");
+  }
+}
+
+function scheduleRevenueCatCleanup() {
+  setTimeout(cleanupRevenueCatOverlay, 400);
+  setTimeout(cleanupRevenueCatOverlay, 2000);
+}
+
 async function getWebCustomerInfo() {
   return getRevenueCatWeb().getCustomerInfo();
 }
@@ -521,9 +542,16 @@ export async function purchaseProduct(
         expectedStoreProductId
       );
 
-      const result = await getRevenueCatWeb().purchase({
-        rcPackage: pkg,
-      });
+      let result;
+      webPurchaseInFlight = true;
+      try {
+        result = await getRevenueCatWeb().purchase({
+          rcPackage: pkg,
+        });
+      } finally {
+        webPurchaseInFlight = false;
+        scheduleRevenueCatCleanup();
+      }
 
       const customerInfo = result?.customerInfo;
 
