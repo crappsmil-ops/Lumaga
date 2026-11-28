@@ -1,4 +1,5 @@
 ﻿import RecoverySettings from "@/components/RecoverySettings";
+import LumagaIdCard from "@/components/LumagaIdCard";
 import React, { useEffect, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Link } from "react-router-dom";
@@ -636,6 +637,8 @@ useEffect(() => {
           </div>
 
           <RecoverySettings />
+
+          <LumagaIdCard />
         </motion.div>
       </div>
     </PullToRefresh>
